@@ -1,0 +1,12 @@
+/*.txt
+/Makefile
+/Makefile.in
+/gudev.args
+/gudev.hierarchy
+/gudev.interfaces
+/gudev.prerequisites
+/gudev.signals
+/html/
+/tmpl/
+/version.xml
+/xml/
