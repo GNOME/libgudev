@@ -9,7 +9,6 @@ lib_LTLIBRARIES =
 noinst_DATA =
 MANPAGES =
 CLEANFILES = $(BUILT_SOURCES)
-EXTRA_DIST =
 BUILT_SOURCES =
 
 GCC_COLORS ?= 'ooh, shiny!'
@@ -27,6 +26,11 @@ pkgconfig_DATA =
 AM_MAKEFLAGS = --no-print-directory
 AM_CPPFLAGS =
 AM_CFLAGS =
+
+EXTRA_DIST = \
+	README \
+	COPYING \
+	NEWS
 
 # ------------------------------------------------------------------------------
 # Version numbers
