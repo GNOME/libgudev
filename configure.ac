@@ -1,9 +1,9 @@
 AC_PREREQ([2.64])
 AC_INIT([libgudev],
         [219],
-        [http://bugzilla.gnome.org/enter_bug.cgi?product=gudev],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=libgudev],
         [libgudev],
-        [https://developer.gnome.org/gudev])
+        [http://wiki.gnome.org/Projects/libgudev])
 AC_CONFIG_SRCDIR([gudev/gudev.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])

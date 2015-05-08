@@ -10,8 +10,8 @@
     <releaseinfo>
        For version &version; — the latest version of this
        documentation can be found at
-       <ulink role="online-location" url="https://developer.gnome.org/gudev">
-         https://developer.gnome.org/gudev
+       <ulink role="online-location" url="https://developer.gnome.org/libgudev">
+         https://developer.gnome.org/libgudev
        </ulink>.
     </releaseinfo>
     <copyright>
