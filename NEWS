@@ -1,0 +1,10 @@
+libgudev - GObject bindings for libudev
+
+CHANGES WITH 219:
+
+        * Initial release of libgudev as separate project.
+
+        * Initial import of libgudev-218 from the systemd repository. No
+          functional changes. It is binary compatible to the old package. Please
+          note that you need to pass --disable-gudev to systemd. Otherwise, this
+          package will conflict with libgudev provided by systemd.

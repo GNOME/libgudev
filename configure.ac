@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT([libgudev],
-        [220],
+        [219],
         [http://bugzilla.gnome.org/enter_bug.cgi?product=gudev],
         [libgudev],
         [https://developer.gnome.org/gudev])
