@@ -1,5 +1,11 @@
 libgudev - GObject bindings for libudev
 
+CHANGES WITH 230:
+
+        * Bump version number so the package will supercede any gudev
+          sub-packages provided via systemd. We intend to drop gudev from
+          systemd-221, but lets be safe and just bump it to 230 now.
+
 CHANGES WITH 219:
 
         * Initial release of libgudev as separate project.
