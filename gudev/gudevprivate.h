@@ -33,7 +33,7 @@ G_BEGIN_DECLS
 GUdevDevice *
 _g_udev_device_new (struct udev_device *udevice);
 
-struct udev *_g_udev_client_get_udev (GUdevClient *client);
+struct udev_enumerate *_g_udev_client_new_enumerate (GUdevClient *client);
 
 G_END_DECLS
 

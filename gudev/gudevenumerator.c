@@ -124,7 +124,7 @@ g_udev_enumerator_constructed (GObject *object)
 
   g_assert (G_UDEV_IS_CLIENT (enumerator->priv->client));
 
-  enumerator->priv->e = udev_enumerate_new (_g_udev_client_get_udev (enumerator->priv->client));
+  enumerator->priv->e = _g_udev_client_new_enumerate (enumerator->priv->client);
 
   if (G_OBJECT_CLASS (g_udev_enumerator_parent_class)->constructed != NULL)
     G_OBJECT_CLASS (g_udev_enumerator_parent_class)->constructed (object);
