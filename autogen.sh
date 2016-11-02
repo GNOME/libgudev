@@ -9,8 +9,6 @@ which gnome-autogen.sh || {
     exit 1
 }
 
-git submodule update --init --recursive
-
 REQUIRED_AUTOCONF_VERSION=2.64
 REQUIRED_AUTOMAKE_VERSION=1.11
 REQUIRED_INTLTOOL_VERSION=0.40.0
