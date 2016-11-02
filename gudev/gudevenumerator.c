@@ -27,7 +27,6 @@
 #include "gudevclient.h"
 #include "gudevenumerator.h"
 #include "gudevdevice.h"
-#include "gudevmarshal.h"
 #include "gudevprivate.h"
 
 /**

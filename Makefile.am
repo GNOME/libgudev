@@ -61,7 +61,6 @@ pkgconfig_DATA += \
 
 EXTRA_DIST += \
 	gudev-1.0.pc.in \
-	gudev/gudevmarshal.list \
 	gudev/gudevenumtypes.h.template \
 	gudev/gudevenumtypes.c.template \
 	scripts/gjs-example.js \
@@ -83,8 +82,6 @@ libgudev_1_0_la_SOURCES = \
 	gudev/gudevprivate.h
 
 nodist_libgudev_1_0_la_SOURCES = \
-	gudev/gudevmarshal.h \
-	gudev/gudevmarshal.c \
 	gudev/gudevenumtypes.h \
 	gudev/gudevenumtypes.c
 
@@ -116,15 +113,6 @@ libgudev_1_0_la_LDFLAGS = \
 	-export-dynamic \
 	-no-undefined \
 	-Wl,--version-script=$(top_srcdir)/libgudev-1.0.sym
-
-gudev/gudevmarshal.h: gudev/gudevmarshal.list
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)glib-genmarshal $< --prefix=g_udev_marshal --header > $@
-
-gudev/gudevmarshal.c: gudev/gudevmarshal.list
-	$(AM_V_at)$(MKDIR_P) $(dir $@)
-	$(AM_V_GEN)echo '#include "gudevmarshal.h"' > $@ && \
-	glib-genmarshal $< --prefix=g_udev_marshal --body >> $@
 
 gudev/gudevenumtypes.%: gudev/gudevenumtypes.%.template gudev/gudevenums.h
 	$(AM_V_at)$(MKDIR_P) $(dir $@)

@@ -27,7 +27,6 @@
 
 #include "gudevclient.h"
 #include "gudevdevice.h"
-#include "gudevmarshal.h"
 #include "gudevprivate.h"
 
 /**
@@ -297,7 +296,7 @@ g_udev_client_class_init (GUdevClientClass *klass)
                                          G_STRUCT_OFFSET (GUdevClientClass, uevent),
                                          NULL,
                                          NULL,
-                                         g_udev_marshal_VOID__STRING_OBJECT,
+                                         g_cclosure_marshal_generic,
                                          G_TYPE_NONE,
                                          2,
                                          G_TYPE_STRING,

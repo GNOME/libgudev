@@ -39,7 +39,7 @@ GOBJECT_INTROSPECTION_CHECK([1.31.1])
    enable_introspection=no])
 
 PKG_CHECK_MODULES([LIBUDEV], [libudev >= 199])
-PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.22.0 gobject-2.0 >= 2.22.0 gio-2.0])
+PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.30.0 gobject-2.0 >= 2.30.0 gio-2.0])
 
 AC_CONFIG_FILES([
         Makefile

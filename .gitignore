@@ -33,8 +33,6 @@
 /gtk-doc.make
 /gudev/gudevenumtypes.h
 /gudev/gudevenumtypes.c
-/gudev/gudevmarshal.h
-/gudev/gudevmarshal.c
 /gudev-1.0.pc
 /libtool
 /m4/
