@@ -1,4 +1,5 @@
-GTESTER        = gtester		# in $PATH for non-GLIB packages
+# Note, we need this set for umockdev to be available in tests
+GTESTER        = env LD_PRELOAD=libumockdev-preload.so.0: gtester		# in $PATH for non-GLIB packages
 GTESTER_REPORT = gtester-report		# in $PATH for non-GLIB packages
 
 # initialize variables for unconditional += appending
