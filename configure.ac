@@ -41,9 +41,19 @@ GOBJECT_INTROSPECTION_CHECK([1.31.1])
 PKG_CHECK_MODULES([LIBUDEV], [libudev >= 199])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.30.0 gobject-2.0 >= 2.30.0 gio-2.0])
 
+AC_ARG_ENABLE([umockdev],
+	      AS_HELP_STRING([--disable-umockdev], [disable umockdev tests (default: enabled)]),,
+	      [enable_umockdev=yes])
+if test x"$enable_umockdev" != x"no" ; then
+	PKG_CHECK_MODULES([UMOCKDEV], umockdev-1.0)
+fi
+
+AM_CONDITIONAL(HAVE_UMOCKDEV, [test x"$enable_umockdev" = x"yes"])
+
 AC_CONFIG_FILES([
         Makefile
         gudev-1.0.pc
+        tests/Makefile
         docs/Makefile
         docs/version.xml
 ])
@@ -62,4 +72,6 @@ AC_MSG_RESULT([
         CFLAGS:                  ${CFLAGS}
         CPPFLAGS:                ${CPPFLAGS}
         LDFLAGS:                 ${LDFLAGS}
+
+        umockdev (tests):        ${enable_umockdev}
 ])

@@ -174,6 +174,8 @@ if ENABLE_GTK_DOC
 SUBDIRS += docs
 endif
 
+SUBDIRS += tests
+
 #docs/html:
 #	$(AM_V_at)$(MKDIR_P) $(dir $@)
 #	$(AM_V_LN)$(LN_S) -f ../gudev/html $@
