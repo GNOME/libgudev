@@ -1,5 +1,10 @@
 libgudev - GObject bindings for libudev
 
+CHANGES WITH 231:
+        * Fix a bug in the enumerator to ensure that client subsystems
+          are implicitly matched
+        * Require a newer GLib to simplify some code
+
 CHANGES WITH 230:
 
         * Bump version number so the package will supercede any gudev
