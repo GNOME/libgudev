@@ -47,7 +47,8 @@ test_enumerator_filter (void)
 				     "ID_MODEL", "KoolGadget 2", NULL);
 
 	umockdev_testbed_add_device (testbed, "drm", "dev3", NULL,
-				     "ID_FOR_SEAT", "drm-pci-0000_00_02_0", NULL);
+				     "ID_FOR_SEAT", "drm-pci-0000_00_02_0", NULL,
+				     NULL);
 
 	/* Check the number of items in GUdevClient */
 	const gchar *subsystems[] = { "drm", NULL};
