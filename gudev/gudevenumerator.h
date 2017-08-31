@@ -35,6 +35,10 @@ G_BEGIN_DECLS
 #define G_UDEV_IS_ENUMERATOR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), G_UDEV_TYPE_ENUMERATOR))
 #define G_UDEV_ENUMERATOR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), G_UDEV_TYPE_ENUMERATOR, GUdevEnumeratorClass))
 
+#ifdef G_DEFINE_AUTOPTR_CLEANUP_FUNC
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GUdevEnumerator, g_object_unref)
+#endif
+
 typedef struct _GUdevEnumeratorClass   GUdevEnumeratorClass;
 typedef struct _GUdevEnumeratorPrivate GUdevEnumeratorPrivate;
 

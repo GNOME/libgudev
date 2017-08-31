@@ -35,6 +35,10 @@ G_BEGIN_DECLS
 #define G_UDEV_IS_CLIENT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), G_UDEV_TYPE_CLIENT))
 #define G_UDEV_CLIENT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), G_UDEV_TYPE_CLIENT, GUdevClientClass))
 
+#ifdef G_DEFINE_AUTOPTR_CLEANUP_FUNC
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GUdevClient, g_object_unref)
+#endif
+
 typedef struct _GUdevClientClass   GUdevClientClass;
 typedef struct _GUdevClientPrivate GUdevClientPrivate;
 

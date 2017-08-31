@@ -35,6 +35,10 @@ G_BEGIN_DECLS
 #define G_UDEV_IS_DEVICE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), G_UDEV_TYPE_DEVICE))
 #define G_UDEV_DEVICE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), G_UDEV_TYPE_DEVICE, GUdevDeviceClass))
 
+#ifdef G_DEFINE_AUTOPTR_CLEANUP_FUNC
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GUdevDevice, g_object_unref)
+#endif
+
 typedef struct _GUdevDeviceClass   GUdevDeviceClass;
 typedef struct _GUdevDevicePrivate GUdevDevicePrivate;
 
