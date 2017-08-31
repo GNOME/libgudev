@@ -1,5 +1,9 @@
 libgudev - GObject bindings for libudev
 
+CHANGES WITH 232:
+        * Fix crash on plenty of architectures in the test suite
+        * Add g_autoptr automatic clean up for libgudev objects
+
 CHANGES WITH 231:
         * Fix a bug in the enumerator to ensure that client subsystems
           are implicitly matched
