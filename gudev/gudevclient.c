@@ -287,6 +287,10 @@ g_udev_client_class_init (GUdevClientClass *klass)
    *
    * Emitted when @client receives an uevent.
    *
+   * Note that while you'll have access to all the device's properties and attributes
+   * for the majority of actions, only the sysfs path will be available when the device
+   * is removed.
+   *
    * This signal is emitted in the
    * <link linkend="g-main-context-push-thread-default">thread-default main loop</link>
    * of the thread that @client was created in.
