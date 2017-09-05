@@ -281,7 +281,8 @@ g_udev_client_class_init (GUdevClientClass *klass)
   /**
    * GUdevClient::uevent:
    * @client: The #GUdevClient receiving the event.
-   * @action: The action for the uevent e.g. "add", "remove", "change", "move", etc.
+   * @action: The action for the uevent e.g. "add", "remove", "change", "move",
+   *          "online" or "offline"
    * @device: Details about the #GUdevDevice the event is for.
    *
    * Emitted when @client receives an uevent.
