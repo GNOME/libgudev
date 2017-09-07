@@ -291,6 +291,9 @@ g_udev_client_class_init (GUdevClientClass *klass)
    * for the majority of actions, only the sysfs path will be available when the device
    * is removed.
    *
+   * Also note that the action is an arbitrary string, controlled by device drivers. Other
+   * values than those listed is possible, but unlikely.
+   *
    * This signal is emitted in the
    * <link linkend="g-main-context-push-thread-default">thread-default main loop</link>
    * of the thread that @client was created in.
