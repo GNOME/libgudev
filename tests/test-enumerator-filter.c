@@ -37,6 +37,9 @@ test_enumerator_filter (void)
 	/* create test bed */
 	UMockdevTestbed *testbed = umockdev_testbed_new ();
 
+	/* Relies on a test bed having been set up */
+	g_assert (umockdev_in_mock_environment ());
+
 	/* Add 2 devices in the USB subsystem, and one in the DRM subsystem */
 	umockdev_testbed_add_device (testbed, "usb", "dev1", NULL,
 				     "idVendor", "0815", "idProduct", "AFFE", NULL,
@@ -73,8 +76,6 @@ int main(int argc, char **argv)
 {
 	setlocale (LC_ALL, NULL);
 	g_test_init (&argc, &argv, NULL);
-
-	g_assert (umockdev_in_mock_environment ());
 
 	g_test_add_func ("/gudev/enumerator_filter", test_enumerator_filter);
 
