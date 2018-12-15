@@ -16,7 +16,7 @@
   <homepage rdf:resource="https://wiki.gnome.org/Projects/libgudev" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/desktop-devel-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/libgudev/" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=libgudev" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libgudev/issues/" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
 
   <programming-language>C</programming-language>
