@@ -31,8 +31,8 @@
 
   <repository>
     <GitRepository>
-      <browse rdf:resource="http://git.gnome.org/browse/libgudev/"/>
-      <location rdf:resource="git://git.gnome.org/libgudev"/>
+      <browse rdf:resource="https://gitlab.gnome.org/GNOME/libgudev"/>
+      <location rdf:resource="https://gitlab.gnome.org/GNOME/libgudev.git"/>
     </GitRepository>
   </repository>
 </Project>
