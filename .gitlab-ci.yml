@@ -1,14 +1,12 @@
+image: fedora:latest
+
 variables:
-  LAST_ABI_BREAK: "43a593b5b4097b887e49eaacafbc1337bd709718"
+  LAST_ABI_BREAK: "334f31b3cf0837ffb2298f498686905e8ba14f7b"
   DNF_CORE_DEPS: >
     gcc
     gettext
-    redhat-rpm-config
-    libtool
-    automake
-    autoconf
-    xz
-    make
+    meson
+    ninja-build
     git
     gnome-common
     systemd-devel
@@ -23,16 +21,39 @@ variables:
 
 stages:
   - test
+  - document
+  - deploy
 
 build-fedora:
-  image: fedora:latest
   stage: test
   before_script:
-    - dnf install -y ${DNF_CORE_DEPS} ${DNF_TEST_DEPS} ${DNF_API_DOC_DEPS}
+    - dnf install -y ${DNF_CORE_DEPS} ${DNF_TEST_DEPS}
   script:
-    - ./autogen.sh --disable-dependency-tracking
-    - make
-    - make install
-    - make check
-    - ./.ci/check-abi ${LAST_ABI_BREAK} $(git rev-parse HEAD)
-    - make distcheck
+    - meson setup build/
+    - ninja -C build/ install
+    - .ci/check-abi ${LAST_ABI_BREAK} $(git rev-parse HEAD)
+
+reference:
+  stage: document
+  before_script:
+    - dnf install -y ${DNF_CORE_DEPS} ${DNF_API_DOC_DEPS}
+  script:
+    - meson setup build/ -Dgtk_doc=true
+    - ninja -C build/ install
+  artifacts:
+    name: libgudev-doc
+    paths:
+      - build/docs/html
+
+pages:
+  stage: deploy
+  dependencies:
+    - reference
+  script:
+    - mkdir -p public/
+    - mv build/docs/html/ public/libgudev/
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
