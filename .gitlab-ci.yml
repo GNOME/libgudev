@@ -1,0 +1,14 @@
+stages:
+- test
+
+build-fedora:
+  image: fedora:latest
+  stage: test
+  before_script:
+    - dnf install -y gcc redhat-rpm-config libtool automake autoconf gtk-doc make glib2-devel systemd-devel umockdev-devel
+  script:
+    - ./autogen.sh --disable-dependency-tracking
+    - make
+    - make install
+    - make check
+
