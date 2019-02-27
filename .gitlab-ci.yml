@@ -1,0 +1,14 @@
+stages:
+- test
+
+build-fedora:
+  image: fedora:latest
+  stage: test
+  before_script:
+    - dnf install -y gcc redhat-rpm-config automake autoconf gtk-doc glib2-devel systemd-devel umockdev
+  script:
+    - ./autogen.sh
+    - make
+    - make install
+    - make check
+
