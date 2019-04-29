@@ -79,7 +79,7 @@ enum
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (GUdevClient, g_udev_client, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (GUdevClient, g_udev_client, G_TYPE_OBJECT, G_ADD_PRIVATE(GUdevClient))
 
 /* ---------------------------------------------------------------------------------------------------- */
 
@@ -309,16 +309,12 @@ g_udev_client_class_init (GUdevClientClass *klass)
                                          2,
                                          G_TYPE_STRING,
                                          G_UDEV_TYPE_DEVICE);
-
-  g_type_class_add_private (klass, sizeof (GUdevClientPrivate));
 }
 
 static void
 g_udev_client_init (GUdevClient *client)
 {
-  client->priv = G_TYPE_INSTANCE_GET_PRIVATE (client,
-                                              G_UDEV_TYPE_CLIENT,
-                                              GUdevClientPrivate);
+  client->priv = g_udev_client_get_instance_private (client);
 }
 
 /**

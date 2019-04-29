@@ -50,7 +50,7 @@ enum
   PROP_CLIENT,
 };
 
-G_DEFINE_TYPE (GUdevEnumerator, g_udev_enumerator, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (GUdevEnumerator, g_udev_enumerator, G_TYPE_OBJECT, G_ADD_PRIVATE(GUdevEnumerator))
 
 /* ---------------------------------------------------------------------------------------------------- */
 
@@ -155,16 +155,12 @@ g_udev_enumerator_class_init (GUdevEnumeratorClass *klass)
                                                         G_UDEV_TYPE_CLIENT,
                                                         G_PARAM_CONSTRUCT_ONLY |
                                                         G_PARAM_READWRITE));
-
-  g_type_class_add_private (klass, sizeof (GUdevEnumeratorPrivate));
 }
 
 static void
 g_udev_enumerator_init (GUdevEnumerator *enumerator)
 {
-  enumerator->priv = G_TYPE_INSTANCE_GET_PRIVATE (enumerator,
-                                                  G_UDEV_TYPE_ENUMERATOR,
-                                                  GUdevEnumeratorPrivate);
+  enumerator->priv = g_udev_enumerator_get_instance_private (enumerator);
 }
 
 /**

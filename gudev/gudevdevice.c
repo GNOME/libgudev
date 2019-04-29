@@ -93,7 +93,7 @@ struct _GUdevDevicePrivate
   GHashTable *sysfs_attr_strvs;
 };
 
-G_DEFINE_TYPE (GUdevDevice, g_udev_device, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (GUdevDevice, g_udev_device, G_TYPE_OBJECT, G_ADD_PRIVATE(GUdevDevice))
 
 static void
 g_udev_device_finalize (GObject *object)
@@ -124,16 +124,12 @@ g_udev_device_class_init (GUdevDeviceClass *klass)
   GObjectClass *gobject_class = (GObjectClass *) klass;
 
   gobject_class->finalize = g_udev_device_finalize;
-
-  g_type_class_add_private (klass, sizeof (GUdevDevicePrivate));
 }
 
 static void
 g_udev_device_init (GUdevDevice *device)
 {
-  device->priv = G_TYPE_INSTANCE_GET_PRIVATE (device,
-                                              G_UDEV_TYPE_DEVICE,
-                                              GUdevDevicePrivate);
+  device->priv = g_udev_device_get_instance_private (device);
 }
 
 
