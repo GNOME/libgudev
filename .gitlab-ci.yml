@@ -1,3 +1,6 @@
+variables:
+    LAST_ABI_BREAK: "43a593b5b4097b887e49eaacafbc1337bd709718"
+
 stages:
 - test
 
@@ -5,10 +8,10 @@ build-fedora:
   image: fedora:latest
   stage: test
   before_script:
-    - dnf install -y gcc redhat-rpm-config libtool automake autoconf gtk-doc make glib2-devel systemd-devel umockdev-devel
+    - dnf install -y gcc redhat-rpm-config libtool automake autoconf gtk-doc make glib2-devel systemd-devel umockdev-devel git libabigail
   script:
     - ./autogen.sh --disable-dependency-tracking
     - make
     - make install
     - make check
-
+    - ./.ci/check-abi ${LAST_ABI_BREAK} $(git rev-parse HEAD)
