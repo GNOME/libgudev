@@ -1,3 +1,6 @@
+variables:
+    LAST_ABI_BREAK: "43a593b5b4097b887e49eaacafbc1337bd709718"
+
 stages:
 - test
 
@@ -11,4 +14,4 @@ build-fedora:
     - make
     - make install
     - make check
-
+    - ./.ci/check-abi ${LAST_ABI_BREAK} $(git rev-parse HEAD)
