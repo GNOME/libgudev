@@ -761,7 +761,9 @@ g_udev_device_has_sysfs_attr (GUdevDevice  *device,
  * @device: A #GUdevDevice.
  * @name: Name of the sysfs attribute.
  *
- * Look up the sysfs attribute with @name on @device.
+ * Look up the sysfs attribute with @name on @device. The retrieved value
+ * is cached in the device. Repeated calls will return the same value and
+ * not open the attribute again.
  *
  * Returns: (nullable): The value of the sysfs attribute or %NULL if
  * there is no such attribute. Do not free this string, it is owned by
@@ -782,7 +784,8 @@ g_udev_device_get_sysfs_attr (GUdevDevice  *device,
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to an integer
- * using strtol().
+ * using strtol(). The retrieved value is cached in the device. Repeated calls
+ * will return the same value and not open the attribute again.
  *
  * Returns: The value of the sysfs attribute or 0 if there is no such
  * attribute.
@@ -813,7 +816,9 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to an unsigned
- * 64-bit integer using g_ascii_strtoull().
+ * 64-bit integer using g_ascii_strtoull(). The retrieved value is cached in the
+ * device. Repeated calls will return the same value and not open the attribute
+ * again.
  *
  * Returns: The value of the sysfs attribute or 0 if there is no such
  * attribute.
@@ -844,7 +849,9 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to a double
- * precision floating point number using strtod().
+ * precision floating point number using strtod(). The retrieved value is cached
+ * in the device. Repeated calls will return the same value and not open the
+ * attribute again.
  *
  * Returns: The value of the sysfs attribute or 0.0 if there is no such
  * attribute.
@@ -876,7 +883,9 @@ out:
  *
  * Look up the sysfs attribute with @name on @device and convert it to an
  * boolean. This is done by doing a case-insensitive string comparison
- * on the string value against "1" and "true".
+ * on the string value against "1" and "true". The retrieved value is
+ * cached in the device. Repeated calls will return the same value and
+ * not open the attribute again.
  *
  * Returns: The value of the sysfs attribute or %FALSE if there is no such
  * attribute.
@@ -912,6 +921,9 @@ g_udev_device_get_sysfs_attr_as_boolean (GUdevDevice  *device,
  * form-feed ('\f'), newline ('\n'), carriage return ('\r'), horizontal
  * tab ('\t'), and vertical tab ('\v') are considered; the locale is
  * not taken into account).
+ *
+ * The retrieved value is cached in the device. Repeated calls will return
+ * the same value and not open the attribute again.
  *
  * Returns: (nullable) (transfer none) (array zero-terminated=1) (element-type utf8):
  * The value of the sysfs attribute split into tokens or %NULL if
