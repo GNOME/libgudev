@@ -743,13 +743,16 @@ g_udev_device_get_sysfs_attr_keys (GUdevDevice *device)
  * @device: A #GUdevDevice.
  * @key: Name of sysfs attribute.
  *
- * Check if a the sysfs attribute with the given key exists.
+ * Check if a the sysfs attribute with the given key exists. The
+ * retrieved value is cached in the device. Repeated calls will
+ * return the same result and not check for the presence of the
+ * attribute again.
  *
  * Returns: %TRUE only if the value for @key exist.
  */
 gboolean
 g_udev_device_has_sysfs_attr (GUdevDevice  *device,
-                            const gchar  *key)
+                              const gchar  *key)
 {
   g_return_val_if_fail (G_UDEV_IS_DEVICE (device), FALSE);
   g_return_val_if_fail (key != NULL, FALSE);
