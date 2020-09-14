@@ -91,6 +91,7 @@ struct _GUdevDevicePrivate
   gchar **tags;
   GHashTable *prop_strvs;
   GHashTable *sysfs_attr_strvs;
+  GHashTable *sysfs_attr;
 };
 
 G_DEFINE_TYPE_WITH_CODE (GUdevDevice, g_udev_device, G_TYPE_OBJECT, G_ADD_PRIVATE(GUdevDevice))
@@ -113,6 +114,9 @@ g_udev_device_finalize (GObject *object)
 
   if (device->priv->sysfs_attr_strvs != NULL)
     g_hash_table_unref (device->priv->sysfs_attr_strvs);
+
+  if (device->priv->sysfs_attr != NULL)
+    g_hash_table_unref (device->priv->sysfs_attr);
 
   if (G_OBJECT_CLASS (g_udev_device_parent_class)->finalize != NULL)
     (* G_OBJECT_CLASS (g_udev_device_parent_class)->finalize) (object);
@@ -140,6 +144,10 @@ _g_udev_device_new (struct udev_device *udevice)
 
   device =  G_UDEV_DEVICE (g_object_new (G_UDEV_TYPE_DEVICE, NULL));
   device->priv->udevice = udev_device_ref (udevice);
+  device->priv->sysfs_attr = g_hash_table_new_full (g_str_hash,
+                                                    g_str_equal,
+                                                    g_free,
+                                                    g_free);
 
   return device;
 }
@@ -746,7 +754,8 @@ g_udev_device_get_sysfs_attr_keys (GUdevDevice *device)
  * Check if a the sysfs attribute with the given key exists. The
  * retrieved value is cached in the device. Repeated calls will
  * return the same result and not check for the presence of the
- * attribute again.
+ * attribute again, unless updated through one of the "uncached"
+ * functions.
  *
  * Returns: %TRUE only if the value for @key exist.
  */
@@ -766,7 +775,8 @@ g_udev_device_has_sysfs_attr (GUdevDevice  *device,
  *
  * Look up the sysfs attribute with @name on @device. The retrieved value
  * is cached in the device. Repeated calls will return the same value and
- * not open the attribute again.
+ * not open the attribute again, unless updated through one of the
+ * "uncached" functions.
  *
  * Returns: (nullable): The value of the sysfs attribute or %NULL if
  * there is no such attribute. Do not free this string, it is owned by
@@ -776,8 +786,14 @@ const gchar *
 g_udev_device_get_sysfs_attr (GUdevDevice  *device,
                               const gchar  *name)
 {
+  const char *attr;
+
   g_return_val_if_fail (G_UDEV_IS_DEVICE (device), NULL);
   g_return_val_if_fail (name != NULL, NULL);
+
+  attr = g_hash_table_lookup (device->priv->sysfs_attr, name);
+  if (attr)
+    return attr;
   return udev_device_get_sysattr_value (device->priv->udevice, name);
 }
 
@@ -788,7 +804,8 @@ g_udev_device_get_sysfs_attr (GUdevDevice  *device,
  *
  * Look up the sysfs attribute with @name on @device and convert it to an integer
  * using strtol(). The retrieved value is cached in the device. Repeated calls
- * will return the same value and not open the attribute again.
+ * will return the same value and not open the attribute again, unless updated
+ * through one of the "uncached" functions.
  *
  * Returns: The value of the sysfs attribute or 0 if there is no such
  * attribute.
@@ -821,7 +838,7 @@ out:
  * Look up the sysfs attribute with @name on @device and convert it to an unsigned
  * 64-bit integer using g_ascii_strtoull(). The retrieved value is cached in the
  * device. Repeated calls will return the same value and not open the attribute
- * again.
+ * again, unless updated through one of the "uncached" functions.
  *
  * Returns: The value of the sysfs attribute or 0 if there is no such
  * attribute.
@@ -854,7 +871,7 @@ out:
  * Look up the sysfs attribute with @name on @device and convert it to a double
  * precision floating point number using strtod(). The retrieved value is cached
  * in the device. Repeated calls will return the same value and not open the
- * attribute again.
+ * attribute again, unless updated through one of the "uncached" functions.
  *
  * Returns: The value of the sysfs attribute or 0.0 if there is no such
  * attribute.
@@ -888,7 +905,8 @@ out:
  * boolean. This is done by doing a case-insensitive string comparison
  * on the string value against "1" and "true". The retrieved value is
  * cached in the device. Repeated calls will return the same value and
- * not open the attribute again.
+ * not open the attribute again, unless updated through one of the
+ * "uncached" functions.
  *
  * Returns: The value of the sysfs attribute or %FALSE if there is no such
  * attribute.
@@ -926,7 +944,8 @@ g_udev_device_get_sysfs_attr_as_boolean (GUdevDevice  *device,
  * not taken into account).
  *
  * The retrieved value is cached in the device. Repeated calls will return
- * the same value and not open the attribute again.
+ * the same value and not open the attribute again, unless updated through
+ * one of the "uncached" functions.
  *
  * Returns: (nullable) (transfer none) (array zero-terminated=1) (element-type utf8):
  * The value of the sysfs attribute split into tokens or %NULL if
@@ -952,6 +971,233 @@ g_udev_device_get_sysfs_attr_as_strv (GUdevDevice  *device,
 
   result = NULL;
   s = g_udev_device_get_sysfs_attr (device, name);
+  if (s == NULL)
+    goto out;
+
+  result = split_at_whitespace (s);
+  if (result == NULL)
+    goto out;
+
+  if (device->priv->sysfs_attr_strvs == NULL)
+    device->priv->sysfs_attr_strvs = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_strfreev);
+  g_hash_table_insert (device->priv->sysfs_attr_strvs, g_strdup (name), result);
+
+out:
+  return (const gchar* const *) result;
+}
+
+/**
+ * g_udev_device_has_sysfs_attr_uncached:
+ * @device: A #GUdevDevice.
+ * @key: Name of sysfs attribute.
+ *
+ * Check if a the sysfs attribute with the given key exists. The
+ * retrieved value is cached in the device. Repeated calls will
+ * return the same result and not check for the presence of the
+ * attribute again, unless updated through one of the "uncached"
+ * functions.
+ *
+ * Returns: %TRUE only if the value for @key exist.
+ */
+gboolean
+g_udev_device_has_sysfs_attr_uncached (GUdevDevice  *device,
+                                       const gchar  *key)
+{
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), FALSE);
+  g_return_val_if_fail (key != NULL, FALSE);
+  return g_udev_device_get_sysfs_attr_uncached (device, key) != NULL;
+}
+
+/**
+ * g_udev_device_get_sysfs_attr_uncached:
+ * @device: A #GUdevDevice.
+ * @name: Name of the sysfs attribute.
+ *
+ * Look up the sysfs attribute with @name on @device. This function does
+ * blocking I/O, and updates the sysfs attributes cache.
+ *
+ * Returns: (nullable): The value of the sysfs attribute or %NULL if
+ * there is no such attribute. Do not free this string, it is owned by
+ * @device.
+ */
+const gchar *
+g_udev_device_get_sysfs_attr_uncached (GUdevDevice  *device,
+                                       const gchar  *name)
+{
+  g_autofree char *path = NULL;
+  char *contents = NULL;
+
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), NULL);
+  g_return_val_if_fail (name != NULL, NULL);
+
+  path = g_build_filename (udev_device_get_syspath (device->priv->udevice), name, NULL);
+  if (!g_file_get_contents (path, &contents, NULL, NULL))
+    return NULL;
+  g_hash_table_insert (device->priv->sysfs_attr, g_strdup (name), contents);
+
+  return contents;
+}
+
+/**
+ * g_udev_device_get_sysfs_attr_as_int_uncached:
+ * @device: A #GUdevDevice.
+ * @name: Name of the sysfs attribute.
+ *
+ * Look up the sysfs attribute with @name on @device and convert it to an integer
+ * using strtol(). This function does blocking I/O, and updates the sysfs
+ * attributes cache.
+ *
+ * Returns: The value of the sysfs attribute or 0 if there is no such
+ * attribute.
+ */
+gint
+g_udev_device_get_sysfs_attr_as_int_uncached (GUdevDevice  *device,
+                                              const gchar  *name)
+{
+  gint result;
+  const gchar *s;
+
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), 0);
+  g_return_val_if_fail (name != NULL, 0);
+
+  result = 0;
+  s = g_udev_device_get_sysfs_attr_uncached (device, name);
+  if (s == NULL)
+    goto out;
+
+  result = strtol (s, NULL, 0);
+out:
+  return result;
+}
+
+/**
+ * g_udev_device_get_sysfs_attr_as_uint64_uncached:
+ * @device: A #GUdevDevice.
+ * @name: Name of the sysfs attribute.
+ *
+ * Look up the sysfs attribute with @name on @device and convert it to an unsigned
+ * 64-bit integer using g_ascii_strtoull(). This function does blocking I/O, and
+ * updates the sysfs attributes cache.
+ *
+ * Returns: The value of the sysfs attribute or 0 if there is no such
+ * attribute.
+ */
+guint64
+g_udev_device_get_sysfs_attr_as_uint64_uncached (GUdevDevice  *device,
+                                                 const gchar  *name)
+{
+  guint64 result;
+  const gchar *s;
+
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), 0);
+  g_return_val_if_fail (name != NULL, 0);
+
+  result = 0;
+  s = g_udev_device_get_sysfs_attr_uncached (device, name);
+  if (s == NULL)
+    goto out;
+
+  result = g_ascii_strtoull (s, NULL, 0);
+out:
+  return result;
+}
+
+/**
+ * g_udev_device_get_sysfs_attr_as_double_uncached:
+ * @device: A #GUdevDevice.
+ * @name: Name of the sysfs attribute.
+ *
+ * Look up the sysfs attribute with @name on @device and convert it to a double
+ * precision floating point number using strtod(). This function does blocking
+ * I/O, and updates the sysfs attributes cache.
+ *
+ * Returns: The value of the sysfs attribute or 0.0 if there is no such
+ * attribute.
+ */
+gdouble
+g_udev_device_get_sysfs_attr_as_double_uncached (GUdevDevice  *device,
+                                                 const gchar  *name)
+{
+  gdouble result;
+  const gchar *s;
+
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), 0.0);
+  g_return_val_if_fail (name != NULL, 0.0);
+
+  result = 0.0;
+  s = g_udev_device_get_sysfs_attr_uncached (device, name);
+  if (s == NULL)
+    goto out;
+
+  result = strtod (s, NULL);
+out:
+  return result;
+}
+
+/**
+ * g_udev_device_get_sysfs_attr_as_boolean_uncached:
+ * @device: A #GUdevDevice.
+ * @name: Name of the sysfs attribute.
+ *
+ * Look up the sysfs attribute with @name on @device and convert it to an
+ * boolean. This is done by doing a case-insensitive string comparison
+ * on the string value against "1" and "true". This function does
+ * blocking I/O, and updates the sysfs attributes cache.
+ *
+ * Returns: The value of the sysfs attribute or %FALSE if there is no such
+ * attribute.
+ */
+gboolean
+g_udev_device_get_sysfs_attr_as_boolean_uncached (GUdevDevice  *device,
+                                                  const gchar  *name)
+{
+  gboolean result;
+  const gchar *s;
+
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), FALSE);
+  g_return_val_if_fail (name != NULL, FALSE);
+
+  result = FALSE;
+  s = g_udev_device_get_sysfs_attr_uncached (device, name);
+  if (s == NULL)
+    goto out;
+
+  if (strcmp (s, "1") == 0 || g_ascii_strcasecmp (s, "true") == 0)
+    result = TRUE;
+ out:
+  return result;
+}
+
+/**
+ * g_udev_device_get_sysfs_attr_as_strv_uncached:
+ * @device: A #GUdevDevice.
+ * @name: Name of the sysfs attribute.
+ *
+ * Look up the sysfs attribute with @name on @device and return the result of
+ * splitting it into non-empty tokens split at white space (only space (' '),
+ * form-feed ('\f'), newline ('\n'), carriage return ('\r'), horizontal
+ * tab ('\t'), and vertical tab ('\v') are considered; the locale is
+ * not taken into account).
+ *
+ * This function does blocking I/O, and updates the sysfs attributes cache.
+ *
+ * Returns: (nullable) (transfer none) (array zero-terminated=1) (element-type utf8):
+ * The value of the sysfs attribute split into tokens or %NULL if
+ * there is no such attribute. This array is owned by @device and
+ * should not be freed by the caller.
+ */
+const gchar * const *
+g_udev_device_get_sysfs_attr_as_strv_uncached (GUdevDevice  *device,
+                                               const gchar  *name)
+{
+  gchar **result;
+  const gchar *s;
+
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), NULL);
+  g_return_val_if_fail (name != NULL, NULL);
+
+  result = NULL;
+  s = g_udev_device_get_sysfs_attr_uncached (device, name);
   if (s == NULL)
     goto out;
 

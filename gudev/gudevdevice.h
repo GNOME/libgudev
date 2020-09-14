@@ -129,6 +129,21 @@ const gchar* const *g_udev_device_get_sysfs_attr_as_strv    (GUdevDevice  *devic
                                                              const gchar  *name);
 const gchar* const *g_udev_device_get_tags                  (GUdevDevice  *device);
 
+gboolean            g_udev_device_has_sysfs_attr_uncached            (GUdevDevice  *device,
+                                                                      const gchar  *key);
+const gchar        *g_udev_device_get_sysfs_attr_uncached            (GUdevDevice  *device,
+                                                                      const gchar  *name);
+gint                g_udev_device_get_sysfs_attr_as_int_uncached     (GUdevDevice  *device,
+                                                                      const gchar  *name);
+guint64             g_udev_device_get_sysfs_attr_as_uint64_uncached  (GUdevDevice  *device,
+                                                                      const gchar  *name);
+gdouble             g_udev_device_get_sysfs_attr_as_double_uncached  (GUdevDevice  *device,
+                                                                      const gchar  *name);
+gboolean            g_udev_device_get_sysfs_attr_as_boolean_uncached (GUdevDevice  *device,
+                                                                      const gchar  *name);
+const gchar* const *g_udev_device_get_sysfs_attr_as_strv_uncached    (GUdevDevice  *device,
+                                                                      const gchar  *name);
+
 G_END_DECLS
 
 #endif /* __G_UDEV_DEVICE_H__ */

@@ -34,6 +34,13 @@ global:
         g_udev_device_get_sysfs_attr_as_int;
         g_udev_device_get_sysfs_attr_as_strv;
         g_udev_device_get_sysfs_attr_as_uint64;
+        g_udev_device_has_sysfs_attr_uncached;
+        g_udev_device_get_sysfs_attr_uncached;
+        g_udev_device_get_sysfs_attr_as_int_uncached;
+        g_udev_device_get_sysfs_attr_as_uint64_uncached;
+        g_udev_device_get_sysfs_attr_as_double_uncached;
+        g_udev_device_get_sysfs_attr_as_boolean_uncached;
+        g_udev_device_get_sysfs_attr_as_strv_uncached;
         g_udev_device_get_sysfs_attr_keys;
         g_udev_device_get_sysfs_path;
         g_udev_device_get_tags;
