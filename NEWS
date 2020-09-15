@@ -1,5 +1,9 @@
 libgudev - GObject bindings for libudev
 
+CHANGES WITH 234:
+        * Clarify that _get_sysfs_attr() functions are cached
+        * Add functions to get uncached sysfs attributes
+
 CHANGES WITH 233:
         * Require glib 2.38
         * Small documentation updates
