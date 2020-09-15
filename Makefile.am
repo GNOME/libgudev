@@ -35,9 +35,9 @@ EXTRA_DIST = \
 # ------------------------------------------------------------------------------
 # Version numbers
 
-LIBGUDEV_CURRENT=2
+LIBGUDEV_CURRENT=3
 LIBGUDEV_REVISION=0
-LIBGUDEV_AGE=2
+LIBGUDEV_AGE=3
 
 # ------------------------------------------------------------------------------
 # libgudev
