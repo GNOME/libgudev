@@ -1,8 +1,8 @@
 variables:
-    LAST_ABI_BREAK: "43a593b5b4097b887e49eaacafbc1337bd709718"
+  LAST_ABI_BREAK: "43a593b5b4097b887e49eaacafbc1337bd709718"
 
 stages:
-- test
+  - test
 
 build-fedora:
   image: fedora:latest
