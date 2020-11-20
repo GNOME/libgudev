@@ -1,5 +1,25 @@
 variables:
   LAST_ABI_BREAK: "43a593b5b4097b887e49eaacafbc1337bd709718"
+  DNF_CORE_DEPS: >
+    gcc
+    gettext
+    redhat-rpm-config
+    libtool
+    automake
+    autoconf
+    xz
+    make
+    git
+    gnome-common
+    systemd-devel
+    glib2-devel
+  DNF_TEST_DEPS: >
+    gobject-introspection-devel
+    vala
+    umockdev-devel
+    libabigail
+  DNF_API_DOC_DEPS: >
+    gtk-doc
 
 stages:
   - test
@@ -8,7 +28,7 @@ build-fedora:
   image: fedora:latest
   stage: test
   before_script:
-    - dnf install -y gcc redhat-rpm-config libtool automake autoconf gtk-doc make glib2-devel systemd-devel umockdev-devel git libabigail gnome-common xz
+    - dnf install -y ${DNF_CORE_DEPS} ${DNF_TEST_DEPS} ${DNF_API_DOC_DEPS}
   script:
     - ./autogen.sh --disable-dependency-tracking
     - make
