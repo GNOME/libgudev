@@ -1,5 +1,9 @@
 libgudev - GObject bindings for libudev
 
+CHANGES WITH 235:
+        * Port build system to meson and remove autotools
+        * Fix conversion of sysfs attributes to boolean
+
 CHANGES WITH 234:
         * Clarify that _get_sysfs_attr() functions are cached
         * Add functions to get uncached sysfs attributes

@@ -1,5 +1,5 @@
 project('gudev', 'c',
-  version: '234',
+  version: '235',
   license: 'LGPLv2.1+',
   meson_version: '>= 0.53.0',
   default_options: [
