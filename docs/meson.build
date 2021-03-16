@@ -49,6 +49,6 @@ gnome.gtkdoc(
   install_dir: join_paths(
     gtkdocdir,
     'html',
-    package_string,
+    package_name,
   )
 )

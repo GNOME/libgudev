@@ -1,4 +1,4 @@
-project('gudev', 'c',
+project('libgudev', 'c',
   version: '235',
   license: 'LGPLv2.1+',
   meson_version: '>= 0.53.0',
@@ -15,7 +15,7 @@ api_version = '1.0'
 lib_version = '0.3.0'
 version = meson.project_version()
 
-package_name = meson.project_name()
+package_name = 'gudev'
 package_string = '@0@-@1@'.format(package_name, api_version)
 
 # Paths
