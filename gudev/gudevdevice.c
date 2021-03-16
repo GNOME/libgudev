@@ -914,7 +914,7 @@ truncate_at_linefeed (const char *value)
  *
  * Look up the sysfs attribute with @name on @device and convert it to an
  * boolean. This is done by doing a case-insensitive string comparison
- * on the string value against "1" and "true". The retrieved value is
+ * on the string value against "1", "true", "Y" and "y". The retrieved value is
  * cached in the device. Repeated calls will return the same value and
  * not open the attribute again, unless updated through one of the
  * "uncached" functions.
