@@ -41,7 +41,7 @@ test_uncached_sysfs_attr (void)
 	g_assert (umockdev_in_mock_environment ());
 
 	umockdev_testbed_add_device (testbed, "platform", "dev1", NULL,
-				     "dytc_lapmode", "0", NULL,
+				     "dytc_lapmode", "1", "console", "Y\n", NULL,
 				     "ID_MODEL", "KoolGadget", NULL);
 
 	/* Check the number of items in GUdevClient */
@@ -49,6 +49,7 @@ test_uncached_sysfs_attr (void)
 	GUdevClient *client = g_udev_client_new (subsystems);
 	GUdevDevice *dev;
 	g_autofree char *lapmode_path = NULL;
+	g_autofree char *console_path = NULL;
 	FILE *sysfsfp;
 
 	GList *devices = g_udev_client_query_by_subsystem (client, NULL);
@@ -56,15 +57,27 @@ test_uncached_sysfs_attr (void)
 	dev = devices->data;
 	lapmode_path = g_build_filename (g_udev_device_get_sysfs_path (dev), "dytc_lapmode", NULL);
 	/* First access */
-	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
+	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
 	sysfsfp = fopen (lapmode_path, "w");
-	fprintf (sysfsfp, "%s", "1");
+	fprintf (sysfsfp, "%s\n", "0");
 	fclose (sysfsfp);
 	/* This is cached */
-	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
-	/* This is uncached, and updates the cache */
-	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "dytc_lapmode"));
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
+	/* This is uncached, and updates the cache */
+	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "dytc_lapmode"));
+	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
+
+	/* Test N/Y and trailing linefeeds */
+	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "console"));
+	console_path = g_build_filename (g_udev_device_get_sysfs_path (dev), "console", NULL);
+	sysfsfp = fopen (console_path, "w");
+	fprintf (sysfsfp, "%s\n", "N");
+	fclose (sysfsfp);
+	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "console"));
+	sysfsfp = fopen (console_path, "w");
+	fprintf (sysfsfp, "%s\n", "Y");
+	fclose (sysfsfp);
+	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "console"));
 
 	g_list_free_full (devices, g_object_unref);
 }
