@@ -896,6 +896,17 @@ out:
   return result;
 }
 
+static char *
+truncate_at_linefeed (const char *value)
+{
+  const char *p;
+
+  p = strchr (value, '\n');
+  if (!p)
+    return NULL;
+  return g_strndup (value, p - value);
+}
+
 /**
  * g_udev_device_get_sysfs_attr_as_boolean:
  * @device: A #GUdevDevice.
@@ -916,16 +927,20 @@ g_udev_device_get_sysfs_attr_as_boolean (GUdevDevice  *device,
                                          const gchar  *name)
 {
   gboolean result;
-  const gchar *s;
+  const gchar *raw;
+  g_autofree char *truncated = NULL;
+  const char *s;
 
   g_return_val_if_fail (G_UDEV_IS_DEVICE (device), FALSE);
   g_return_val_if_fail (name != NULL, FALSE);
 
   result = FALSE;
-  s = g_udev_device_get_sysfs_attr (device, name);
-  if (s == NULL)
+  raw = g_udev_device_get_sysfs_attr (device, name);
+  if (raw == NULL)
     goto out;
 
+  truncated = truncate_at_linefeed (raw);
+  s = truncated ?: raw;
   if (strcmp (s, "1") == 0 ||
       g_ascii_strcasecmp (s, "true") == 0 ||
       g_ascii_strcasecmp (s, "y") == 0) {
