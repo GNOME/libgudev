@@ -613,7 +613,7 @@ out:
  *
  * Look up the value for @key on @device and convert it to an
  * boolean. This is done by doing a case-insensitive string comparison
- * on the string value against "1", "true", "Y" and "y".
+ * on the string value against "1" and "true".
  *
  * Returns: The value for @key or %FALSE if @key doesn't exist or
  * isn't a #gboolean.
