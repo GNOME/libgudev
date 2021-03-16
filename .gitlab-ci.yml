@@ -29,9 +29,10 @@ build-fedora:
   before_script:
     - dnf install -y ${DNF_CORE_DEPS} ${DNF_TEST_DEPS}
   script:
-    - meson setup build/
+    - meson setup -Dtests=enabled build/
     - ninja -C build/ install
     - .ci/check-abi ${LAST_ABI_BREAK} $(git rev-parse HEAD)
+    - ninja -C build/ test
 
 reference:
   stage: document
