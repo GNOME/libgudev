@@ -28,3 +28,9 @@ Bugs and patches
 ----------------
 
 Bugs and patches can be contributed on [the project's GitLab page](https://gitlab.gnome.org/GNOME/libgudev/).
+
+License
+-------
+
+libgudev, as a combined works, is released under the GNU Lesser General
+Public License version 2.1 or later. See `COPYING` file for details.
