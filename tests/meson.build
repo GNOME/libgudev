@@ -7,6 +7,10 @@ libgudev_tests = {
     'dependencies': [gio_dep, umockdev_dep],
     'environment': ['LD_PRELOAD=libumockdev-preload.so.0'],
   },
+  'test-double': {
+    'dependencies': [gio_dep, umockdev_dep],
+    'environment': ['LD_PRELOAD=libumockdev-preload.so.0', 'LC_NUMERIC=fr_FR.UTF-8'],
+  },
 }
 
 libgudev_tests_deps = [
