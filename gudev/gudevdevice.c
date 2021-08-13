@@ -568,7 +568,7 @@ out:
  * @key: Name of property.
  *
  * Look up the value for @key on @device and convert it to a double
- * precision floating point number using strtod().
+ * precision floating point number using g_ascii_strtod().
  *
  * Returns: The value for @key or 0.0 if @key doesn't exist or isn't a
  * #gdouble.
@@ -588,7 +588,7 @@ g_udev_device_get_property_as_double (GUdevDevice  *device,
   if (s == NULL)
     goto out;
 
-  result = strtod (s, NULL);
+  result = g_ascii_strtod (s, NULL);
 out:
   return result;
 }
@@ -856,7 +856,7 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to a double
- * precision floating point number using strtod(). The retrieved value is cached
+ * precision floating point number using g_ascii_strtod(). The retrieved value is cached
  * in the device. Repeated calls will return the same value and not open the
  * attribute again, unless updated through one of the "uncached" functions.
  *
@@ -878,7 +878,7 @@ g_udev_device_get_sysfs_attr_as_double (GUdevDevice  *device,
   if (s == NULL)
     goto out;
 
-  result = strtod (s, NULL);
+  result = g_ascii_strtod (s, NULL);
 out:
   return result;
 }
@@ -1114,7 +1114,7 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to a double
- * precision floating point number using strtod(). This function does blocking
+ * precision floating point number using g_ascii_strtod(). This function does blocking
  * I/O, and updates the sysfs attributes cache.
  *
  * Returns: The value of the sysfs attribute or 0.0 if there is no such
@@ -1135,7 +1135,7 @@ g_udev_device_get_sysfs_attr_as_double_uncached (GUdevDevice  *device,
   if (s == NULL)
     goto out;
 
-  result = strtod (s, NULL);
+  result = g_ascii_strtod (s, NULL);
 out:
   return result;
 }
