@@ -16,6 +16,8 @@
 
 #include <gudev/gudev.h>
 
+#define GNU_SKIP_RETURNCODE 77
+
 static void
 test_double (void)
 {
@@ -54,7 +56,11 @@ test_double (void)
 int main(int argc, char **argv)
 {
 	setlocale (LC_ALL, NULL);
-	setlocale (LC_NUMERIC, "fr_FR.UTF-8");
+
+	/* Skip if locale is unavailable */
+	if (setlocale (LC_NUMERIC, "fr_FR.UTF-8") == NULL)
+		return 77;
+
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add_func ("/gudev/double", test_double);
