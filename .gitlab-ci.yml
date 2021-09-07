@@ -37,6 +37,7 @@ build-fedora:
     - ninja -C build/ install
     - .ci/check-abi ${LAST_ABI_BREAK} $(git rev-parse HEAD)
     - ninja -C build/ test
+    - .ci/fail_skipped_tests.py build/meson-logs/testlog.junit.xml
     - ninja -C build/ dist
 
 reference:
