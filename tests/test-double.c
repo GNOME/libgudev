@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 
 	/* Skip if locale is unavailable */
 	if (setlocale (LC_NUMERIC, "fr_FR.UTF-8") == NULL)
-		return 77;
+		return GNU_SKIP_RETURNCODE;
 
 	g_test_init (&argc, &argv, NULL);
 
