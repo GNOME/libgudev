@@ -84,6 +84,9 @@ GUdevDevice *g_udev_client_query_by_sysfs_path         (GUdevClient        *clie
 GUdevDevice *g_udev_client_query_by_subsystem_and_name (GUdevClient        *client,
                                                         const gchar        *subsystem,
                                                         const gchar        *name);
+GUdevDevice *g_udev_client_query_by_subsystem_and_device_file (GUdevClient  *client,
+                                                               const char   *subsystem,
+                                                               const gchar  *device_file);
 
 G_END_DECLS
 

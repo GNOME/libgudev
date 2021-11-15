@@ -515,6 +515,39 @@ g_udev_client_query_by_subsystem_and_name (GUdevClient  *client,
   return device;
 }
 
+/**
+ * g_udev_client_query_by_subsystem_and_device_file:
+ * @client: A #GUdevClient.
+ * @subsystem: A subsystem name.
+ * @device_file: A device file.
+ *
+ * Looks up a device for a device file for a particular subsystem. In contrast to
+ * g_udev_client_query_device_file() this function does not make blocking I/O
+ * through stat()'ing a device file, and relies solely on the udev database making
+ * it a better fit for mocked sysfs hierarchies.
+ *
+ * Returns: (nullable) (transfer full): A #GUdevDevice object or %NULL
+ * if the device was not found. Free with g_object_unref().
+ */
+GUdevDevice *
+g_udev_client_query_by_subsystem_and_device_file (GUdevClient  *client,
+                                                  const char   *subsystem,
+                                                  const gchar  *device_file)
+{
+  GList *l;
+  g_autolist(GUdevDevice) devices = NULL;
+
+  g_return_val_if_fail (G_UDEV_IS_CLIENT (client), NULL);
+  g_return_val_if_fail (device_file != NULL, NULL);
+
+  devices = g_udev_client_query_by_subsystem (client, subsystem);
+  for (l = devices; l != NULL; l = l->next) {
+    if (g_strcmp0 (g_udev_device_get_device_file (l->data), device_file) == 0)
+      return g_object_ref (l->data);
+  }
+  return NULL;
+}
+
 struct udev_enumerate *
 _g_udev_client_new_enumerate (GUdevClient *client)
 {
