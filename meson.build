@@ -34,7 +34,6 @@ pkgincludedir = join_paths(includedir, package_string)
 typelibdir = join_paths(libdir, 'girepository-1.0')
 pkgconfigdir = join_paths(libdir, 'pkgconfig')
 girdir = join_paths(datadir, 'gir-1.0')
-gtkdocdir = join_paths(datadir, 'gtk-doc')
 vapidir = join_paths(datadir, 'vala', 'vapi')
 
 # Dependencies
@@ -44,7 +43,6 @@ glib_req = '>= 2.38.0'
 libudev_req = '>= 199'
 introspection_req = '>= 1.31.1'
 vapigen_req = '>= 0.38.0'
-gtk_doc_req = '>= 1.18'
 
 glib_dep = dependency('glib-2.0', version: glib_req)
 gobject_dep = dependency('gobject-2.0', version: glib_req)
@@ -68,8 +66,8 @@ vapigen_dep = dependency(
   required: get_option('vapi')
 )
 
-gtk_doc_dep = dependency(
-  'gtk-doc', version: gtk_doc_req,
+gi_docgen_dep = dependency(
+  'gi-docgen',
   required: get_option('gtk_doc')
 )
 

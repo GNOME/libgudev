@@ -1,54 +1,46 @@
-glib_prefix = glib_dep.get_pkgconfig_variable('prefix')
-glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html', 'glib')
+if get_option('gtk_doc') and not get_option('introspection').allowed()
+  error('API reference requires introspection.')
+endif
 
-gobject_prefix = gobject_dep.get_pkgconfig_variable('prefix')
-gobject_docpath = join_paths(gobject_prefix, 'share', 'gtk-doc', 'html', 'gobject')
+toml_conf = configuration_data()
+toml_conf.set('version', meson.project_version())
 
-libgudev_reference_ignored_h = [
-  'gudevenumtypes.h',
+gidocgen = find_program('gi-docgen', required: get_option('gtk_doc'))
+
+gidocgen_common_args = [
+  '--quiet',
+  '--no-namespace-dir',
 ]
 
-libgudev_reference_source_folders = [
-  join_paths(srcdir, 'gudev'),
-]
+if get_option('werror')
+  gidocgen_common_args += ['--fatal-warnings']
+endif
 
-version_xml = configuration_data()
-version_xml.set('VERSION', version)
+docs_dir = datadir / 'doc'
 
-configure_file(
-  input: 'version.xml.in',
-  output: 'version.xml',
-  configuration: version_xml,
-  install: false,
-)
-
-libgudev_reference_scan_args = [
-  '--ignore-headers=' + ' '.join(libgudev_reference_ignored_h),
-]
-
-libgudev_reference_mkdb_args = [
-  '--name-space=g_udev',
-]
-
-libgudev_reference_fixxref_args = [
-  '--html-dir=@0@'.format(join_paths(gtkdocdir, 'html', package_string)),
-  '--extra-dir=@0@'.format(glib_docpath),
-  '--extra-dir=@0@'.format(gobject_docpath),
-]
-
-gnome.gtkdoc(
-  package_string,
-  main_xml: 'gudev-docs.xml',
-  gobject_typesfile: files('gudev.types'),
-  src_dir: libgudev_reference_source_folders,
-  dependencies: libgudev_dep,
-  scan_args: libgudev_reference_scan_args,
-  mkdb_args: libgudev_reference_mkdb_args,
-  fixxref_args: libgudev_reference_fixxref_args,
-  install: true,
-  install_dir: join_paths(
-    gtkdocdir,
-    'html',
-    package_name,
+if get_option('gtk_doc')
+  source_toml = configure_file(
+    input: 'GUdev.toml.in',
+    output: 'GUdev.toml',
+    configuration: toml_conf,
+    install: true,
+    install_dir: docs_dir / package_name,
   )
-)
+
+  custom_target('gudev-doc',
+    input: [ source_toml, libgudev_gir[0] ],
+    output: package_name,
+    command: [
+      gidocgen,
+      'generate',
+      gidocgen_common_args,
+      '--config=@INPUT0@',
+      '--output-dir=@OUTPUT@',
+      '--content-dir=@0@'.format(meson.current_source_dir()),
+      '@INPUT1@',
+    ],
+    build_by_default: true,
+    install: true,
+    install_dir: docs_dir,
+  )
+endif
