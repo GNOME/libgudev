@@ -17,30 +17,32 @@
 #include "gudevprivate.h"
 
 /**
- * SECTION:gudevclient
- * @short_description: Query devices and listen to uevents
+ * GUdevClient:
+ * 
+ * Query devices and listen to uevents
  *
  * #GUdevClient is used to query information about devices on a Linux
  * system from the Linux kernel and the udev device
  * manager.
  *
  * Device information is retrieved from the kernel (through the
- * <literal>sysfs</literal> filesystem) and the udev daemon (through a
- * <literal>tmpfs</literal> filesystem) and presented through
- * #GUdevDevice objects. This means that no blocking IO ever happens
+ * `sysfs` filesystem) and the udev daemon (through a
+ * `tmpfs` filesystem) and presented through
+ * [class@Device] objects. This means that no blocking IO ever happens
  * (in both cases, we are essentially just reading data from kernel
  * memory) and as such there are no asynchronous versions of the
  * provided methods.
  *
- * To get #GUdevDevice objects, use
- * g_udev_client_query_by_subsystem(),
- * g_udev_client_query_by_device_number(),
- * g_udev_client_query_by_device_file(),
- * g_udev_client_query_by_sysfs_path(),
- * g_udev_client_query_by_subsystem_and_name()
- * or the #GUdevEnumerator type.
+ * To get [class@Device] objects, use
+ * 
+ * - [method@Client.query_by_subsystem]
+ * - [method@Client.query_by_device_number]
+ * - [method@Client.query_by_device_file]
+ * - [method@Client.query_by_sysfs_path]
+ * - [method@Client.query_by_subsystem_and_name]
+ * - The [class@Enumerator] type
  *
- * To listen to uevents, connect to the #GUdevClient::uevent signal.
+ * To listen to uevents, connect to the [signal@Client::uevent] signal.
  */
 
 struct _GUdevClientPrivate
@@ -309,12 +311,14 @@ g_udev_client_init (GUdevClient *client)
  * @subsystems: (array zero-terminated=1) (element-type utf8) (transfer none) (allow-none): A %NULL terminated string array of subsystems to listen for uevents on, %NULL to not listen on uevents at all, or an empty array to listen to uevents on all subsystems. See the documentation for the #GUdevClient:subsystems property for details on this parameter.
  *
  * Constructs a #GUdevClient object that can be used to query
- * information about devices. Connect to the #GUdevClient::uevent
- * signal to listen for uevents. Note that signals are emitted in the
+ * information about devices. 
+ * 
+ * Connect to the [signal@Client::uevent] signal to listen for uevents. 
+ * Note that signals are emitted in the
  * <link linkend="g-main-context-push-thread-default">thread-default main loop</link>
  * of the thread that you call this constructor from.
  *
- * Returns: A new #GUdevClient object. Free with g_object_unref().
+ * Returns: A new #GUdevClient object. Free with [method@GObject.Object.unref].
  */
 GUdevClient *
 g_udev_client_new (const gchar * const *subsystems)
@@ -331,8 +335,8 @@ g_udev_client_new (const gchar * const *subsystems)
  *
  * Returns: (nullable) (element-type GUdevDevice) (transfer full): A
  * list of #GUdevDevice objects. The caller should free the result by
- * using g_object_unref() on each element in the list and then
- * g_list_free() on the list.
+ * using [method@GObject.Object.unref] on each element in the list and then
+ * [func@GLib.List.free] on the list.
  */
 GList *
 g_udev_client_query_by_subsystem (GUdevClient  *client,
@@ -386,7 +390,7 @@ g_udev_client_query_by_subsystem (GUdevClient  *client,
  * Looks up a device for a type and device number.
  *
  * Returns: (nullable) (transfer full): A #GUdevDevice object or %NULL
- * if the device was not found. Free with g_object_unref().
+ * if the device was not found. Free with [method@GObject.Object.unref].
  */
 GUdevDevice *
 g_udev_client_query_by_device_number (GUdevClient      *client,
@@ -419,7 +423,7 @@ g_udev_client_query_by_device_number (GUdevClient      *client,
  * Looks up a device for a device file.
  *
  * Returns: (nullable) (transfer full): A #GUdevDevice object or %NULL
- * if the device was not found. Free with g_object_unref().
+ * if the device was not found. Free with [method@GObject.Object.unref].
  */
 GUdevDevice *
 g_udev_client_query_by_device_file (GUdevClient  *client,
@@ -456,7 +460,7 @@ g_udev_client_query_by_device_file (GUdevClient  *client,
  * Looks up a device for a sysfs path.
  *
  * Returns: (nullable) (transfer full): A #GUdevDevice object or %NULL
- * if the device was not found. Free with g_object_unref().
+ * if the device was not found. Free with [method@GObject.Object.unref].
  */
 GUdevDevice *
 g_udev_client_query_by_sysfs_path (GUdevClient  *client,
@@ -489,7 +493,7 @@ g_udev_client_query_by_sysfs_path (GUdevClient  *client,
  * Looks up a device for a subsystem and name.
  *
  * Returns: (nullable) (transfer full): A #GUdevDevice object or %NULL
- * if the device was not found. Free with g_object_unref().
+ * if the device was not found. Free with [method@GObject.Object.unref].
  */
 GUdevDevice *
 g_udev_client_query_by_subsystem_and_name (GUdevClient  *client,

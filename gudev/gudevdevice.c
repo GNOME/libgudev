@@ -16,45 +16,56 @@
 #include "gudevprivate.h"
 
 /**
- * SECTION:gudevdevice
- * @short_description: Get information about a device
+ * GUdevDevice:
+ * 
+ * Get information about a device
  *
  * The #GUdevDevice class is used to get information about a specific
  * device. Note that you cannot instantiate a #GUdevDevice object
- * yourself. Instead you must use #GUdevClient to obtain #GUdevDevice
+ * yourself. Instead you must use [class@Client] to obtain #GUdevDevice
  * objects.
  *
  * To get basic information about a device, use
- * g_udev_device_get_subsystem(), g_udev_device_get_devtype(),
- * g_udev_device_get_name(), g_udev_device_get_number(),
- * g_udev_device_get_sysfs_path(), g_udev_device_get_driver(),
- * g_udev_device_get_action(), g_udev_device_get_seqnum(),
- * g_udev_device_get_device_type(), g_udev_device_get_device_number(),
- * g_udev_device_get_device_file(),
- * g_udev_device_get_device_file_symlinks().
+ * 
+ * - [method@Device.get_subsystem]
+ * - [method@Device.get_devtype]
+ * - [method@Device.get_name]
+ * - [method@Device.get_number]
+ * - [method@Device.get_sysfs_path]
+ * - [method@Device.get_driver]
+ * - [method@Device.get_action]
+ * - [method@Device.get_seqnum]
+ * - [method@Device.get_device_type]
+ * - [method@Device.get_device_number]
+ * - [method@Device.get_device_file]
+ * - [method@Device.get_device_file_symlinks]
  *
- * To navigate the device tree, use g_udev_device_get_parent() and
- * g_udev_device_get_parent_with_subsystem().
+ * To navigate the device tree, use 
+ * 
+ * - [method@Device.get_parent]
+ * - [method@Device.get_parent_with_subsystem].
  *
  * To access udev properties for the device, use
- * g_udev_device_get_property_keys(),
- * g_udev_device_has_property(),
- * g_udev_device_get_property(),
- * g_udev_device_get_property_as_int(),
- * g_udev_device_get_property_as_uint64(),
- * g_udev_device_get_property_as_double(),
- * g_udev_device_get_property_as_boolean() and
- * g_udev_device_get_property_as_strv().
+ * 
+ * - [method@Device.get_property_keys]
+ * - [method@Device.has_property]
+ * - [method@Device.get_property]
+ * - [method@Device.get_property_as_int]
+ * - [method@Device.get_property_as_uint64]
+ * - [method@Device.get_property_as_double]
+ * - [method@Device.get_property_as_boolean]
+ * - [method@Device.get_property_as_strv]
  *
  * To access sysfs attributes for the device, use
- * g_udev_device_get_sysfs_attr_keys(),
- * g_udev_device_has_sysfs_attr(),
- * g_udev_device_get_sysfs_attr(),
- * g_udev_device_get_sysfs_attr_as_int(),
- * g_udev_device_get_sysfs_attr_as_uint64(),
- * g_udev_device_get_sysfs_attr_as_double(),
- * g_udev_device_get_sysfs_attr_as_boolean() and
- * g_udev_device_get_sysfs_attr_as_strv().
+ *
+ * - [method@Device.get_sysfs_attr_keys]
+ * - [method@Device.has_sysfs_attr]
+ * - [method@Device.get_sysfs_attr]
+ * - [method@Device.get_sysfs_attr_as_int]
+ * - [method@Device.get_sysfs_attr_as_uint64]
+ * - [method@Device.get_sysfs_attr_as_double]
+ * - [method@Device.get_sysfs_attr_as_boolean]
+ * - [method@Device.get_sysfs_attr_as_strv]
  *
  * Note that all getters on #GUdevDevice are non-reffing – returned
  * values are owned by the object, should not be freed and are only
@@ -63,7 +74,7 @@
  * By design, #GUdevDevice will not react to changes for a device – it
  * only contains a snapshot of information when the #GUdevDevice
  * object was created. To work with changes, you typically connect to
- * the #GUdevClient::uevent signal on a #GUdevClient and get a new
+ * the [signal@Client::uevent] signal on a [class@Client] and get a new
  * #GUdevDevice whenever an event happens.
  */
 
@@ -188,7 +199,7 @@ g_udev_device_get_name (GUdevDevice *device)
  * g_udev_device_get_number:
  * @device: A #GUdevDevice.
  *
- * Gets the number of @device, e.g. "3" if g_udev_device_get_name() returns "sda3".
+ * Gets the number of @device, e.g. "3" if [method@Device.get_name] returns "sda3".
  *
  * Returns: The number of @device.
  */
@@ -369,7 +380,7 @@ g_udev_device_get_device_file_symlinks (GUdevDevice *device)
  * Gets the immediate parent of @device, if any.
  *
  * Returns: (nullable) (transfer full): A #GUdevDevice or %NULL if
- * @device has no parent. Free with g_object_unref().
+ * @device has no parent. Free with [method@GObject.Object.unref].
  */
 GUdevDevice *
 g_udev_device_get_parent (GUdevDevice  *device)
@@ -402,7 +413,7 @@ g_udev_device_get_parent (GUdevDevice  *device)
  *
  * Returns: (nullable) (transfer full): A #GUdevDevice or %NULL if
  * @device has no parent with @subsystem and @devtype. Free with
- * g_object_unref().
+ * [method@GObject.Object.unref].
  */
 GUdevDevice *
 g_udev_device_get_parent_with_subsystem (GUdevDevice  *device,
@@ -537,7 +548,7 @@ out:
  * @key: Name of property.
  *
  * Look up the value for @key on @device and convert it to an unsigned
- * 64-bit integer using g_ascii_strtoull().
+ * 64-bit integer using [func@GLib.ascii_strtoull].
  *
  * Returns: The value  for @key or 0 if @key doesn't  exist or isn't a
  * #guint64.
@@ -568,7 +579,7 @@ out:
  * @key: Name of property.
  *
  * Look up the value for @key on @device and convert it to a double
- * precision floating point number using g_ascii_strtod().
+ * precision floating point number using [func@GLib.ascii_strtod].
  *
  * Returns: The value for @key or 0.0 if @key doesn't exist or isn't a
  * #gdouble.
@@ -823,7 +834,7 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to an unsigned
- * 64-bit integer using g_ascii_strtoull(). The retrieved value is cached in the
+ * 64-bit integer using [func@GLib.ascii_strtoull]. The retrieved value is cached in the
  * device. Repeated calls will return the same value and not open the attribute
  * again, unless updated through one of the "uncached" functions.
  *
@@ -856,7 +867,7 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to a double
- * precision floating point number using g_ascii_strtod(). The retrieved value is cached
+ * precision floating point number using [func@GLib.ascii_strtod]. The retrieved value is cached
  * in the device. Repeated calls will return the same value and not open the
  * attribute again, unless updated through one of the "uncached" functions.
  *
@@ -1082,7 +1093,7 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to an unsigned
- * 64-bit integer using g_ascii_strtoull(). This function does blocking I/O, and
+ * 64-bit integer using [func@GLib.ascii_strtoull]. This function does blocking I/O, and
  * updates the sysfs attributes cache.
  *
  * Returns: The value of the sysfs attribute or 0 if there is no such
@@ -1114,7 +1125,7 @@ out:
  * @name: Name of the sysfs attribute.
  *
  * Look up the sysfs attribute with @name on @device and convert it to a double
- * precision floating point number using g_ascii_strtod(). This function does blocking
+ * precision floating point number using [func@GLib.ascii_strtod]. This function does blocking
  * I/O, and updates the sysfs attributes cache.
  *
  * Returns: The value of the sysfs attribute or 0.0 if there is no such

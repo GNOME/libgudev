@@ -17,10 +17,9 @@
 #include "gudevprivate.h"
 
 /**
- * SECTION:gudevenumerator
- * @short_description: Lookup and sort devices
- *
- * #GUdevEnumerator is used to lookup and sort devices.
+ * GUdevEnumerator:
+ * 
+ * Lookup and sort devices
  *
  * Since: 165
  */
@@ -155,11 +154,13 @@ g_udev_enumerator_init (GUdevEnumerator *enumerator)
  * @client: A #GUdevClient to enumerate devices from.
  *
  * Constructs a #GUdevEnumerator object that can be used to enumerate
- * and sort devices. Use the add_match_*() and add_nomatch_*() methods
+ * and sort devices. 
+ * 
+ * Use the add_match_*() and add_nomatch_*() methods
  * and execute the query to get a list of devices with
- * g_udev_enumerator_execute().
+ * [method@Enumerator.execute].
  *
- * Returns: A new #GUdevEnumerator object. Free with g_object_unref().
+ * Returns: A new #GUdevEnumerator object. Free with [method@GObject.Object.unref].
  *
  * Since: 165
  */
@@ -372,7 +373,7 @@ g_udev_enumerator_add_match_is_initialized (GUdevEnumerator  *enumerator)
  *
  * Executes the query in @enumerator.
  *
- * Returns: (element-type GUdevDevice) (transfer full): A list of #GUdevDevice objects. The caller should free the result by using g_object_unref() on each element in the list and then g_list_free() on the list.
+ * Returns: (element-type GUdevDevice) (transfer full): A list of #GUdevDevice objects. The caller should free the result by using [method@GObject.Object.unref] on each element in the list and then [func@GLib.List.free] on the list.
  *
  * Since: 165
  */
