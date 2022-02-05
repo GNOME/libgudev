@@ -18,7 +18,8 @@ variables:
     umockdev-devel
     libabigail
   DNF_API_DOC_DEPS: >
-    gtk-doc
+    gobject-introspection-devel
+    gi-docgen
 
 stages:
   - test
@@ -50,7 +51,7 @@ reference:
   artifacts:
     name: libgudev-doc
     paths:
-      - build/docs/html
+      - build/docs/gudev
 
 pages:
   stage: deploy
@@ -58,7 +59,7 @@ pages:
     - reference
   script:
     - mkdir -p public/
-    - mv build/docs/html/ public/libgudev/
+    - mv build/docs/gudev/* public/
   artifacts:
     paths:
       - public
