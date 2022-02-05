@@ -29,11 +29,7 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (GUdevDevice, g_object_unref)
 typedef struct _GUdevDeviceClass   GUdevDeviceClass;
 typedef struct _GUdevDevicePrivate GUdevDevicePrivate;
 
-/**
- * GUdevDevice:
- *
- * The #GUdevDevice struct is opaque and should not be accessed directly.
- */
+// The #GUdevDevice struct is opaque and should not be accessed directly.
 struct _GUdevDevice
 {
   GObject             parent;

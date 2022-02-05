@@ -29,13 +29,7 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (GUdevEnumerator, g_object_unref)
 typedef struct _GUdevEnumeratorClass   GUdevEnumeratorClass;
 typedef struct _GUdevEnumeratorPrivate GUdevEnumeratorPrivate;
 
-/**
- * GUdevEnumerator:
- *
- * The #GUdevEnumerator struct is opaque and should not be accessed directly.
- *
- * Since: 165
- */
+// The #GUdevEnumerator struct is opaque and should not be accessed directly.
 struct _GUdevEnumerator
 {
   GObject              parent;

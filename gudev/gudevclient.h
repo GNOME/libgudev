@@ -29,11 +29,7 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (GUdevClient, g_object_unref)
 typedef struct _GUdevClientClass   GUdevClientClass;
 typedef struct _GUdevClientPrivate GUdevClientPrivate;
 
-/**
- * GUdevClient:
- *
- * The #GUdevClient struct is opaque and should not be accessed directly.
- */
+// The #GUdevClient struct is opaque and should not be accessed directly.
 struct _GUdevClient
 {
   GObject              parent;
