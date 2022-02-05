@@ -11,6 +11,9 @@ The official download locations are:
 The official web site is:
   https://gitlab.gnome.org/GNOME/libgudev/
 
+The nightly documentations are available in:
+  https://gnome.pages.gitlab.gnome.org/libgudev/
+
 Installation
 ------------
 
