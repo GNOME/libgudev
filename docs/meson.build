@@ -31,13 +31,13 @@ libgudev_reference_mkdb_args = [
 ]
 
 libgudev_reference_fixxref_args = [
-  '--html-dir=@0@'.format(join_paths(gtkdocdir, 'html', package_string)),
+  '--html-dir=@0@'.format(join_paths(gtkdocdir, 'html', package_name)),
   '--extra-dir=@0@'.format(glib_docpath),
   '--extra-dir=@0@'.format(gobject_docpath),
 ]
 
 gnome.gtkdoc(
-  package_string,
+  package_name,
   main_xml: 'gudev-docs.xml',
   gobject_typesfile: files('gudev.types'),
   src_dir: libgudev_reference_source_folders,
