@@ -115,6 +115,7 @@ gboolean            g_udev_device_get_sysfs_attr_as_boolean (GUdevDevice  *devic
 const gchar* const *g_udev_device_get_sysfs_attr_as_strv    (GUdevDevice  *device,
                                                              const gchar  *name);
 const gchar* const *g_udev_device_get_tags                  (GUdevDevice  *device);
+const gchar* const *g_udev_device_get_current_tags          (GUdevDevice  *device);
 
 gboolean            g_udev_device_has_sysfs_attr_uncached            (GUdevDevice  *device,
                                                                       const gchar  *key);

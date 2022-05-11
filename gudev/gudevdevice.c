@@ -76,6 +76,7 @@ struct _GUdevDevicePrivate
   gchar **property_keys;
   gchar **sysfs_attr_keys;
   gchar **tags;
+  gchar **current_tags;
   GHashTable *prop_strvs;
   GHashTable *sysfs_attr_strvs;
 };
@@ -91,6 +92,7 @@ g_udev_device_finalize (GObject *object)
   g_strfreev (device->priv->property_keys);
   g_strfreev (device->priv->sysfs_attr_keys);
   g_strfreev (device->priv->tags);
+  g_strfreev (device->priv->current_tags);
 
   if (device->priv->udevice != NULL)
     udev_device_unref (device->priv->udevice);
@@ -119,6 +121,20 @@ g_udev_device_init (GUdevDevice *device)
   device->priv = g_udev_device_get_instance_private (device);
 }
 
+static void
+fetch_current_tags (GUdevDevice *device)
+{
+  struct udev_list_entry *l;
+  GPtrArray *p;
+
+  p = g_ptr_array_new ();
+  for (l = udev_device_get_current_tags_list_entry (device->priv->udevice); l != NULL; l = udev_list_entry_get_next (l))
+    {
+      g_ptr_array_add (p, g_strdup (udev_list_entry_get_name (l)));
+    }
+  g_ptr_array_add (p, NULL);
+  device->priv->current_tags = (gchar **) g_ptr_array_free (p, FALSE);
+}
 
 GUdevDevice *
 _g_udev_device_new (struct udev_device *udevice)
@@ -127,6 +143,8 @@ _g_udev_device_new (struct udev_device *udevice)
 
   device =  G_UDEV_DEVICE (g_object_new (G_UDEV_TYPE_DEVICE, NULL));
   device->priv->udevice = udev_device_ref (udevice);
+
+  fetch_current_tags (device);
 
   return device;
 }
@@ -1204,6 +1222,26 @@ g_udev_device_get_tags (GUdevDevice  *device)
 
  out:
   return (const gchar * const *) device->priv->tags;
+}
+
+/**
+ * g_udev_device_get_current_tags:
+ * @device: A #GUdevDevice.
+ *
+ * Gets all current tags for @device.
+ *
+ * https://www.freedesktop.org/software/systemd/man/udev_device_has_current_tag.html
+ *
+ * Returns: (transfer none) (array zero-terminated=1) (element-type utf8): A %NULL terminated string array of current tags. This array is owned by @device and should not be freed by the caller.
+ *
+ * Since: 238
+ */
+const gchar* const *
+g_udev_device_get_current_tags (GUdevDevice *device)
+{
+  g_return_val_if_fail (G_UDEV_IS_DEVICE (device), NULL);
+
+  return (const gchar * const *) device->priv->current_tags;
 }
 
 /**

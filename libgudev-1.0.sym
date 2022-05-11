@@ -44,6 +44,7 @@ global:
         g_udev_device_get_sysfs_attr_keys;
         g_udev_device_get_sysfs_path;
         g_udev_device_get_tags;
+        g_udev_device_get_current_tags;
         g_udev_device_get_type;
         g_udev_device_get_usec_since_initialized;
         g_udev_device_has_property;

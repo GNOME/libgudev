@@ -19,6 +19,7 @@ static void
 test_tags ()
 {
 	const char *expected_tags[] = { "tag1", "tag2", "tag3", NULL };
+	const char *expected_current_tags[] = { "tag2", "tag3", NULL };
 	struct udev *udev = NULL;
 	struct udev_device *udev_device = NULL;
 	g_autoptr(GUdevDevice) dev = NULL;
@@ -30,6 +31,7 @@ test_tags ()
 	g_setenv ("SEQNUM", "1", TRUE);
 	g_setenv ("TAGS", "tag1:tag2:tag3", TRUE);
 	g_setenv ("CURRENT_TAGS", "tag2:tag3", TRUE);
+	g_setenv ("UDEV_DATABASE_VERSION", "1", TRUE);
 
 	udev = udev_new ();
 	udev_device = udev_device_new_from_environment (udev);
@@ -38,7 +40,11 @@ test_tags ()
 
 	dev = _g_udev_device_new (udev_device);
 
+	g_assert_nonnull (g_udev_device_get_tags (dev));
 	g_assert_cmpstrv (expected_tags, g_udev_device_get_tags (dev));
+
+	g_assert_nonnull (g_udev_device_get_current_tags (dev));
+	g_assert_cmpstrv (expected_current_tags, g_udev_device_get_current_tags (dev));
 
 	g_clear_pointer (&udev, udev_unref);
 	g_clear_pointer (&udev_device, udev_device_unref);
