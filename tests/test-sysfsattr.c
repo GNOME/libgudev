@@ -42,6 +42,7 @@ test_uncached_sysfs_attr (void)
 	lapmode_path = g_build_filename (g_udev_device_get_sysfs_path (dev), "dytc_lapmode", NULL);
 	/* First access */
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
+	g_assert_cmpstr (g_udev_device_get_sysfs_attr (dev, "dytc_lapmode"), ==, "1");
 	sysfsfp = fopen (lapmode_path, "w");
 	fprintf (sysfsfp, "%s\n", "0");
 	fclose (sysfsfp);
@@ -50,6 +51,7 @@ test_uncached_sysfs_attr (void)
 	/* This is uncached, and updates the cache */
 	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "dytc_lapmode"));
 	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
+	g_assert_cmpstr (g_udev_device_get_sysfs_attr (dev, "dytc_lapmode"), ==, "0");
 
 	/* Test N/Y and trailing linefeeds */
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "console"));
