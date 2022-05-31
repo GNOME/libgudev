@@ -56,12 +56,21 @@ fixture_teardown (Fixture *f, G_GNUC_UNUSED const void *data)
 }
 
 static void
+write_sysfs_attr (GUdevDevice *dev, const char *attr, const char *value)
+{
+	g_autofree char *path = NULL;
+	FILE *sysfsfp;
+
+	path = g_build_filename (g_udev_device_get_sysfs_path (dev), attr, NULL);
+	sysfsfp = fopen (path, "w");
+	fwrite (value, strlen(value), 1, sysfsfp);
+	fclose (sysfsfp);
+}
+
+static void
 test_uncached_sysfs_attr (Fixture *f, G_GNUC_UNUSED const void *data)
 {
 	g_autoptr(GUdevDevice) dev = NULL;
-	g_autofree char *lapmode_path = NULL;
-	g_autofree char *console_path = NULL;
-	FILE *sysfsfp;
 
 	dev = create_single_dev (f, "P: /devices/dev1\n"
 	                            "E: SUBSYSTEM=platform\n"
@@ -69,13 +78,10 @@ test_uncached_sysfs_attr (Fixture *f, G_GNUC_UNUSED const void *data)
 	                            "A: console=Y\\n\n"
 	                            "E: ID_MODEL=KoolGadget");
 
-	lapmode_path = g_build_filename (g_udev_device_get_sysfs_path (dev), "dytc_lapmode", NULL);
 	/* First access */
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
 	g_assert_cmpstr (g_udev_device_get_sysfs_attr (dev, "dytc_lapmode"), ==, "1");
-	sysfsfp = fopen (lapmode_path, "w");
-	fprintf (sysfsfp, "%s\n", "0");
-	fclose (sysfsfp);
+	write_sysfs_attr (dev, "dytc_lapmode", "0\n");
 	/* This is cached */
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
 	/* This is uncached, and updates the cache */
@@ -85,14 +91,9 @@ test_uncached_sysfs_attr (Fixture *f, G_GNUC_UNUSED const void *data)
 
 	/* Test N/Y and trailing linefeeds */
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "console"));
-	console_path = g_build_filename (g_udev_device_get_sysfs_path (dev), "console", NULL);
-	sysfsfp = fopen (console_path, "w");
-	fprintf (sysfsfp, "%s\n", "N");
-	fclose (sysfsfp);
+	write_sysfs_attr (dev, "console", "N\n");
 	g_assert_false (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "console"));
-	sysfsfp = fopen (console_path, "w");
-	fprintf (sysfsfp, "%s\n", "Y");
-	fclose (sysfsfp);
+	write_sysfs_attr (dev, "console", "Y");
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "console"));
 }
 
