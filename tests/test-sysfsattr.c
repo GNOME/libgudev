@@ -27,6 +27,28 @@ fixture_setup (Fixture *f, G_GNUC_UNUSED const void *data)
 	g_assert (umockdev_in_mock_environment ());
 }
 
+static GUdevDevice*
+create_single_dev (Fixture *f, const char *device)
+{
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GUdevClient) client = NULL;
+	g_autolist(GUdevDevice) devices;
+	GUdevDevice *dev;
+
+	if (!umockdev_testbed_add_from_string (f->testbed, device, &error))
+		g_error ("Failed to add test device: %s", error->message);
+
+	client = g_udev_client_new (NULL);
+
+	devices = g_udev_client_query_by_subsystem (client, NULL);
+	g_assert_cmpint (g_list_length (devices), ==, 1);
+
+	dev = devices->data;
+	devices = g_list_delete_link (devices, devices);
+
+	return dev;
+}
+
 static void
 fixture_teardown (Fixture *f, G_GNUC_UNUSED const void *data)
 {
@@ -36,21 +58,17 @@ fixture_teardown (Fixture *f, G_GNUC_UNUSED const void *data)
 static void
 test_uncached_sysfs_attr (Fixture *f, G_GNUC_UNUSED const void *data)
 {
-	umockdev_testbed_add_device (f->testbed, "platform", "dev1", NULL,
-				     "dytc_lapmode", "1", "console", "Y\n", NULL,
-				     "ID_MODEL", "KoolGadget", NULL);
-
-	/* Check the number of items in GUdevClient */
-	const gchar *subsystems[] = { "platform", NULL};
-	GUdevClient *client = g_udev_client_new (subsystems);
-	GUdevDevice *dev;
+	g_autoptr(GUdevDevice) dev = NULL;
 	g_autofree char *lapmode_path = NULL;
 	g_autofree char *console_path = NULL;
 	FILE *sysfsfp;
 
-	GList *devices = g_udev_client_query_by_subsystem (client, NULL);
-	g_assert_cmpint (g_list_length (devices), ==, 1);
-	dev = devices->data;
+	dev = create_single_dev (f, "P: /devices/dev1\n"
+	                            "E: SUBSYSTEM=platform\n"
+	                            "A: dytc_lapmode=1\n"
+	                            "A: console=Y\\n\n"
+	                            "E: ID_MODEL=KoolGadget");
+
 	lapmode_path = g_build_filename (g_udev_device_get_sysfs_path (dev), "dytc_lapmode", NULL);
 	/* First access */
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean (dev, "dytc_lapmode"));
@@ -76,8 +94,6 @@ test_uncached_sysfs_attr (Fixture *f, G_GNUC_UNUSED const void *data)
 	fprintf (sysfsfp, "%s\n", "Y");
 	fclose (sysfsfp);
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "console"));
-
-	g_list_free_full (devices, g_object_unref);
 }
 
 int main(int argc, char **argv)
