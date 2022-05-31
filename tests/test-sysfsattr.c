@@ -15,16 +15,28 @@
 
 #include <gudev/gudev.h>
 
+typedef struct {
+	UMockdevTestbed *testbed;
+} Fixture;
+
 static void
-test_uncached_sysfs_attr (void)
+fixture_setup (Fixture *f, G_GNUC_UNUSED const void *data)
 {
-	/* create test bed */
-	UMockdevTestbed *testbed = umockdev_testbed_new ();
+	f->testbed = umockdev_testbed_new ();
 
-	/* Relies on a test bed having been set up */
 	g_assert (umockdev_in_mock_environment ());
+}
 
-	umockdev_testbed_add_device (testbed, "platform", "dev1", NULL,
+static void
+fixture_teardown (Fixture *f, G_GNUC_UNUSED const void *data)
+{
+	g_clear_object (&f->testbed);
+}
+
+static void
+test_uncached_sysfs_attr (Fixture *f, G_GNUC_UNUSED const void *data)
+{
+	umockdev_testbed_add_device (f->testbed, "platform", "dev1", NULL,
 				     "dytc_lapmode", "1", "console", "Y\n", NULL,
 				     "ID_MODEL", "KoolGadget", NULL);
 
@@ -73,7 +85,10 @@ int main(int argc, char **argv)
 	setlocale (LC_ALL, NULL);
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add_func ("/gudev/uncached_sysfs_attr", test_uncached_sysfs_attr);
+	g_test_add ("/gudev/uncached_sysfs_attr", Fixture, NULL,
+	            fixture_setup,
+	            test_uncached_sysfs_attr,
+	            fixture_teardown);
 
 	return g_test_run ();
 }

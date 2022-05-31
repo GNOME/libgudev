@@ -20,25 +20,37 @@
 
 #include <gudev/gudev.h>
 
+typedef struct {
+	UMockdevTestbed *testbed;
+} Fixture;
+
 static void
-test_enumerator_filter (void)
+fixture_setup (Fixture *f, G_GNUC_UNUSED const void *data)
 {
-	/* create test bed */
-	UMockdevTestbed *testbed = umockdev_testbed_new ();
+	f->testbed = umockdev_testbed_new ();
 
-	/* Relies on a test bed having been set up */
 	g_assert (umockdev_in_mock_environment ());
+}
 
+static void
+fixture_teardown (Fixture *f, G_GNUC_UNUSED const void *data)
+{
+	g_clear_object (&f->testbed);
+}
+
+static void
+test_enumerator_filter (Fixture *f, G_GNUC_UNUSED const void *data)
+{
 	/* Add 2 devices in the USB subsystem, and one in the DRM subsystem */
-	umockdev_testbed_add_device (testbed, "usb", "dev1", NULL,
+	umockdev_testbed_add_device (f->testbed, "usb", "dev1", NULL,
 				     "idVendor", "0815", "idProduct", "AFFE", NULL,
 				     "ID_MODEL", "KoolGadget", NULL);
 
-	umockdev_testbed_add_device (testbed, "usb", "dev2", NULL,
+	umockdev_testbed_add_device (f->testbed, "usb", "dev2", NULL,
 				     "idVendor", "0815", "idProduct", "AFFF", NULL,
 				     "ID_MODEL", "KoolGadget 2", NULL);
 
-	umockdev_testbed_add_device (testbed, "drm", "dev3", NULL,
+	umockdev_testbed_add_device (f->testbed, "drm", "dev3", NULL,
 				     "ID_FOR_SEAT", "drm-pci-0000_00_02_0", NULL,
 				     NULL);
 
@@ -66,7 +78,10 @@ int main(int argc, char **argv)
 	setlocale (LC_ALL, NULL);
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add_func ("/gudev/enumerator_filter", test_enumerator_filter);
+	g_test_add ("/gudev/enumerator_filter", Fixture, NULL,
+	            fixture_setup,
+	            test_enumerator_filter,
+	            fixture_teardown);
 
 	return g_test_run ();
 }
