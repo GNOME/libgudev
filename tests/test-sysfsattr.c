@@ -112,6 +112,28 @@ test_sysfs_attr_keys (Fixture *f, G_GNUC_UNUSED const void *data)
 	g_assert_cmpstrv (g_udev_device_get_sysfs_attr_keys (dev), expected);
 }
 
+static void
+test_sysfs_attr_as_strv (Fixture *f, G_GNUC_UNUSED const void *data)
+{
+	const char *expected[] = { "1", "2", "3", "4", "5", "6", NULL };
+	const char *empty[] = { NULL };
+	g_autoptr(GUdevDevice) dev = NULL;
+
+	dev = create_single_dev (f, "P: /devices/dev1\n"
+	                            "E: SUBSYSTEM=platform\n"
+	                            "A: test=1\\n2 3\\r4\\t5 \\t\\n6\n"
+	                            "E: ID_MODEL=KoolGadget");
+
+	/* Reading gives the expected result, even after updating the file */
+	g_assert_cmpstrv (g_udev_device_get_sysfs_attr_as_strv (dev, "test"), expected);
+	write_sysfs_attr (dev, "test", "\n");
+	g_assert_cmpstrv (g_udev_device_get_sysfs_attr_as_strv (dev, "test"), expected);
+
+	/* _uncached variant gets the new content and updates the cache */
+	g_assert_cmpstrv (g_udev_device_get_sysfs_attr_as_strv_uncached (dev, "test"), empty);
+	g_assert_cmpstrv (g_udev_device_get_sysfs_attr_as_strv (dev, "test"), empty);
+}
+
 int main(int argc, char **argv)
 {
 	setlocale (LC_ALL, NULL);
@@ -125,6 +147,11 @@ int main(int argc, char **argv)
 	g_test_add ("/gudev/sysfs_attr_keys", Fixture, NULL,
 	            fixture_setup,
 	            test_sysfs_attr_keys,
+	            fixture_teardown);
+
+	g_test_add ("/gudev/sysfs_attr_as_strv", Fixture, NULL,
+	            fixture_setup,
+	            test_sysfs_attr_as_strv,
 	            fixture_teardown);
 
 	return g_test_run ();
