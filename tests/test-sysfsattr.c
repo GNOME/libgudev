@@ -96,6 +96,21 @@ test_uncached_sysfs_attr (Fixture *f, G_GNUC_UNUSED const void *data)
 	g_assert_true (g_udev_device_get_sysfs_attr_as_boolean_uncached (dev, "console"));
 }
 
+static void
+test_sysfs_attr_keys (Fixture *f, G_GNUC_UNUSED const void *data)
+{
+	const char *expected[] = { "console", "dytc_lapmode", "subsystem", "uevent", NULL };
+	g_autoptr(GUdevDevice) dev = NULL;
+
+	dev = create_single_dev (f, "P: /devices/dev1\n"
+	                            "E: SUBSYSTEM=platform\n"
+	                            "A: dytc_lapmode=1\n"
+	                            "A: console=Y\\n\n"
+	                            "E: ID_MODEL=KoolGadget");
+
+	g_assert_cmpstrv (g_udev_device_get_sysfs_attr_keys (dev), expected);
+}
+
 int main(int argc, char **argv)
 {
 	setlocale (LC_ALL, NULL);
@@ -104,6 +119,11 @@ int main(int argc, char **argv)
 	g_test_add ("/gudev/uncached_sysfs_attr", Fixture, NULL,
 	            fixture_setup,
 	            test_uncached_sysfs_attr,
+	            fixture_teardown);
+
+	g_test_add ("/gudev/sysfs_attr_keys", Fixture, NULL,
+	            fixture_setup,
+	            test_sysfs_attr_keys,
 	            fixture_teardown);
 
 	return g_test_run ();
