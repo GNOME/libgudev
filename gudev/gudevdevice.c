@@ -990,6 +990,8 @@ out:
  * functions.
  *
  * Returns: %TRUE only if the value for @key exist.
+ *
+ * Since: 234
  */
 gboolean
 g_udev_device_has_sysfs_attr_uncached (GUdevDevice  *device,
@@ -1008,9 +1010,13 @@ g_udev_device_has_sysfs_attr_uncached (GUdevDevice  *device,
  * Look up the sysfs attribute with @name on @device. This function does
  * blocking I/O, and updates the sysfs attributes cache.
  *
+ * Before version 238 the uncached getters would not strip trailing newlines.
+ *
  * Returns: (nullable): The value of the sysfs attribute or %NULL if
  * there is no such attribute. Do not free this string, it is owned by
  * @device.
+ *
+ * Since: 234
  */
 const gchar *
 g_udev_device_get_sysfs_attr_uncached (GUdevDevice  *device,
@@ -1032,8 +1038,12 @@ g_udev_device_get_sysfs_attr_uncached (GUdevDevice  *device,
  * using strtol(). This function does blocking I/O, and updates the sysfs
  * attributes cache.
  *
+ * Before version 238 the uncached getters would not strip trailing newlines.
+ *
  * Returns: The value of the sysfs attribute or 0 if there is no such
  * attribute.
+ *
+ * Since: 234
  */
 gint
 g_udev_device_get_sysfs_attr_as_int_uncached (GUdevDevice  *device,
@@ -1055,8 +1065,12 @@ g_udev_device_get_sysfs_attr_as_int_uncached (GUdevDevice  *device,
  * 64-bit integer using g_ascii_strtoull(). This function does blocking I/O, and
  * updates the sysfs attributes cache.
  *
+ * Before version 238 the uncached getters would not strip trailing newlines.
+ *
  * Returns: The value of the sysfs attribute or 0 if there is no such
  * attribute.
+ *
+ * Since: 234
  */
 guint64
 g_udev_device_get_sysfs_attr_as_uint64_uncached (GUdevDevice  *device,
@@ -1078,8 +1092,12 @@ g_udev_device_get_sysfs_attr_as_uint64_uncached (GUdevDevice  *device,
  * precision floating point number using g_ascii_strtod(). This function does blocking
  * I/O, and updates the sysfs attributes cache.
  *
+ * Before version 238 the uncached getters would not strip trailing newlines.
+ *
  * Returns: The value of the sysfs attribute or 0.0 if there is no such
  * attribute.
+ *
+ * Since: 234
  */
 gdouble
 g_udev_device_get_sysfs_attr_as_double_uncached (GUdevDevice  *device,
@@ -1102,8 +1120,12 @@ g_udev_device_get_sysfs_attr_as_double_uncached (GUdevDevice  *device,
  * on the string value against "1", "true", "Y" and "y". This function does
  * blocking I/O, and updates the sysfs attributes cache.
  *
+ * Before version 238 the uncached getters would not strip trailing newlines.
+ *
  * Returns: The value of the sysfs attribute or %FALSE if there is no such
  * attribute.
+ *
+ * Since: 234
  */
 gboolean
 g_udev_device_get_sysfs_attr_as_boolean_uncached (GUdevDevice  *device,
@@ -1133,6 +1155,10 @@ g_udev_device_get_sysfs_attr_as_boolean_uncached (GUdevDevice  *device,
  * The value of the sysfs attribute split into tokens or %NULL if
  * there is no such attribute. This array is owned by @device and
  * should not be freed by the caller.
+ *
+ * Before version 238 the uncached getters would not strip trailing newlines.
+ *
+ * Since: 234
  */
 const gchar * const *
 g_udev_device_get_sysfs_attr_as_strv_uncached (GUdevDevice  *device,
