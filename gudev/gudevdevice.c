@@ -122,6 +122,21 @@ g_udev_device_init (GUdevDevice *device)
 }
 
 static void
+fetch_get_tags (GUdevDevice *device)
+{
+  struct udev_list_entry *l;
+  GPtrArray *p;
+
+  p = g_ptr_array_new ();
+  for (l = udev_device_get_tags_list_entry (device->priv->udevice); l != NULL; l = udev_list_entry_get_next (l))
+    {
+      g_ptr_array_add (p, g_strdup (udev_list_entry_get_name (l)));
+    }
+  g_ptr_array_add (p, NULL);
+  device->priv->tags = (gchar **) g_ptr_array_free (p, FALSE);
+}
+
+static void
 fetch_current_tags (GUdevDevice *device)
 {
   struct udev_list_entry *l;
@@ -144,6 +159,7 @@ _g_udev_device_new (struct udev_device *udevice)
   device =  G_UDEV_DEVICE (g_object_new (G_UDEV_TYPE_DEVICE, NULL));
   device->priv->udevice = udev_device_ref (udevice);
 
+  fetch_get_tags (device);
   fetch_current_tags (device);
 
   return device;
@@ -1204,23 +1220,8 @@ g_udev_device_get_sysfs_attr_as_strv_uncached (GUdevDevice  *device,
 const gchar* const *
 g_udev_device_get_tags (GUdevDevice  *device)
 {
-  struct udev_list_entry *l;
-  GPtrArray *p;
-
   g_return_val_if_fail (G_UDEV_IS_DEVICE (device), NULL);
 
-  if (device->priv->tags != NULL)
-    goto out;
-
-  p = g_ptr_array_new ();
-  for (l = udev_device_get_tags_list_entry (device->priv->udevice); l != NULL; l = udev_list_entry_get_next (l))
-    {
-      g_ptr_array_add (p, g_strdup (udev_list_entry_get_name (l)));
-    }
-  g_ptr_array_add (p, NULL);
-  device->priv->tags = (gchar **) g_ptr_array_free (p, FALSE);
-
- out:
   return (const gchar * const *) device->priv->tags;
 }
 
