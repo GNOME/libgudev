@@ -97,7 +97,7 @@ pkg.generate(
   ]
 )
 
-if introspection_dep.found()
+if gir_dep.found()
   libgudev_gir = gnome.generate_gir(
     libgudev,
     sources: libgudev_sources + libgudev_public_h,

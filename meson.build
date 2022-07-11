@@ -42,9 +42,6 @@ cc = meson.get_compiler('c')
 
 glib_req = '>= 2.38.0'
 libudev_req = '>= 199'
-introspection_req = '>= 1.31.1'
-vapigen_req = '>= 0.38.0'
-gtk_doc_req = '>= 1.18'
 
 glib_dep = dependency('glib-2.0', version: glib_req)
 gobject_dep = dependency('gobject-2.0', version: glib_req)
@@ -58,20 +55,12 @@ umockdev_dep = dependency(
   required: get_option('tests')
 )
 
-introspection_dep = dependency(
-  'gobject-introspection-1.0', version: introspection_req,
-  required: get_option('introspection')
-)
+gir_dep = find_program('g-ir-scanner', required: get_option('introspection'))
+vapigen_dep = find_program('vapigen', required : get_option('vapi'))
 
-vapigen_dep = dependency(
-  'vapigen', version: vapigen_req,
-  required: get_option('vapi')
-)
-
-gtk_doc_dep = dependency(
-  'gtk-doc', version: gtk_doc_req,
-  required: get_option('gtk_doc')
-)
+if vapigen_dep.found()
+  assert(gir_dep.found(), 'vapi requires introspection')
+endif
 
 # Configurations
 config_h = configuration_data()
@@ -95,7 +84,7 @@ if get_option('gtk_doc')
 endif
 
 summary('Documentation', get_option('gtk_doc'), section: 'Build')
-summary('Introspection', introspection_dep.found(), section: 'Build')
+summary('Introspection', gir_dep.found(), section: 'Build')
 summary('Vala API', vapigen_dep.found(), section: 'Build')
 summary('Tests', umockdev_dep.found(), section: 'Build')
 
