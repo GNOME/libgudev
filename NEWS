@@ -1,5 +1,12 @@
 libgudev - GObject bindings for libudev
 
+CHANGES WITH 238:
+        * Fix newline stripping
+        * Add g_udev_device_get_current_tags()
+        * Add a number of tests, and devel docs
+        * Fix devhelp not being able to find the docs
+        * Skip locale test with locale isn't available
+
 CHANGES WITH 237:
         * Fix reading double precision floats from sysfs attributes in
           locales that use comma as a separator

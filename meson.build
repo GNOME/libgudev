@@ -1,5 +1,5 @@
 project('libgudev', 'c',
-  version: '237',
+  version: '238',
   license: 'LGPLv2.1+',
   meson_version: '>= 0.53.0',
   default_options: [
