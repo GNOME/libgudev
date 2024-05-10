@@ -23,6 +23,14 @@
 
   <maintainer>
     <foaf:Person>
+      <foaf:name>Peter Hutterer</foaf:name>
+      <foaf:mbox rdf:resource="mailto:peter.hutterer@who-t.net" />
+      <gnome:userid>phutterer</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <maintainer>
+    <foaf:Person>
       <foaf:name>Bastien Nocera</foaf:name>
       <foaf:mbox rdf:resource="mailto:hadess@hadess.net" />
       <gnome:userid>hadess</gnome:userid>
