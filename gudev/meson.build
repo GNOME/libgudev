@@ -33,7 +33,6 @@ libgudev_c_args = [
 ]
 
 libgudev_link_args = [
-  '-export-dynamic',
   '-Wl,--version-script,@0@/libgudev-1.0.sym'.format(top_srcdir),
 ]
 
